@@ -9,13 +9,13 @@ apt update -y
 apt install python3 python3-pip python3.10-venv -y
 
 # Create a directory for the virtual environment
-mkdir -p /home/ubuntu/ray_env  
+mkdir -p /home/root/ray_env  
 
 # Create a virtual environment
-python3 -m venv /home/ubuntu/ray_env  
+python3 -m venv /home/root/ray_env  
 
 # Activate the virtual environment
-source /home/ubuntu/ray_env/bin/activate
+source /home/root/ray_env/bin/activate
 
 # Install Ray
 pip install -U "ray[default]"
