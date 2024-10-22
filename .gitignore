@@ -104,4 +104,4 @@ dmypy.json
 .idea/
 
 # Thư mục utils/private
-utils/private/
+utils/private/*
