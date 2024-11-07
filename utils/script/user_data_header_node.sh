@@ -20,8 +20,8 @@ source /home/root/ray_env/bin/activate
 # Install Ray
 pip install -U "ray[default]"
 
-# Get the public IP address of the instance
-PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+# Get the local IP address of the instance
+LOCAL_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
 
-# Start Ray with the public IP address
-ray start --head --node-ip-address=$PUBLIC_IP --redis-password={TOKEN}
+# Start Ray with the local IP address
+ray start --head --node-ip-address=$LOCAL_IP

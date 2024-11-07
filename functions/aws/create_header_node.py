@@ -3,20 +3,21 @@ from utils.ec2_client import get_ec2_client
 def get_user_data(token):
     with open('utils/script/user_data_header_node.sh', 'r') as file:
         user_data = file.read()
-    user_data = user_data.replace('{TOKEN}', token)
+    # user_data = user_data.replace('{TOKEN}', token)
     return user_data
 
 def create_header_node(token, key_name, security_group_ids):
     ec2 = get_ec2_client()
-    user_data = get_user_data(token)
+    # user_data = get_user_data(token)
+    user_data = get_user_data()
 
     response = ec2.run_instances(
         ImageId='ami-040e71e7b8391cae4',
         InstanceType='t3.medium',
         MinCount=1,
         MaxCount=1,
-        KeyName=key_name,
-        SecurityGroupIds=security_group_ids,
+        # KeyName=key_name,
+        # SecurityGroupIds=security_group_ids,
         UserData=user_data,
         TagSpecifications=[
             {
@@ -43,12 +44,12 @@ def create_header_node(token, key_name, security_group_ids):
     instance_info = ec2.describe_instances(InstanceIds=[instance_id])
     print(f"instance_info: {instance_info}")
     
-    # Check if PublicIpAddress exists
-    instance_ipv4 = instance_info['Reservations'][0]['Instances'][0].get('PublicIpAddress')
+    # Check if PrivateIpAddress exists
+    instance_ipv4 = instance_info['Reservations'][0]['Instances'][0].get('PrivateIpAddress')
 
     if instance_ipv4:
-        print(f"instance_ipv4 '{key_name}' created {instance_ipv4}")
+        print(f"Instance '{instance_id}' created with private IPv4 address: {instance_ipv4}")
     else:
-        print(f"No public IPv4 address assigned to instance '{key_name}'.")
+        print(f"No private IPv4 address assigned to instance '{instance_id}'.")
 
-    return instance_ipv4
+    return instance_ipv4, instance_info['Reservations'][0]['Instances'][0]
