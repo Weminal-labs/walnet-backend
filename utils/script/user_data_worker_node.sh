@@ -21,4 +21,4 @@ source /home/root/ray_env/bin/activate
 pip install -U "ray"
 
 # Add node into cluster Ray with the public IP address
-ray start --address='{PUBLIC_IP}:6379' --redis-password={TOKEN}
+# ray start --address='{PUBLIC_IP}:6379' --redis-password={TOKEN}
