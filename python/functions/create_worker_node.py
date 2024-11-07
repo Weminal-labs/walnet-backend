@@ -1,4 +1,5 @@
 from utils.ec2_client import get_ec2_client
+from utils.regions import ec2_ids, core_region_name
 
 def get_user_data(token, public_ip_header_node):
     with open('utils/script/user_data_worker_node.sh', 'r') as file:
@@ -13,7 +14,7 @@ def create_worker_node(token, key_name, security_group_ids, public_ip_header_nod
     user_data = get_user_data()
 
     response = ec2.run_instances(
-        ImageId='ami-040e71e7b8391cae4',
+        ImageId=ec2_ids[core_region_name]["t2.small"],
         InstanceType='t2.small',
         MinCount=1,
         MaxCount=1,

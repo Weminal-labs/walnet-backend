@@ -1,4 +1,5 @@
 from utils.ec2_client import get_ec2_client
+from utils.regions import ec2_ids, core_region_name
 
 def get_user_data(token):
     with open('utils/script/user_data_header_node.sh', 'r') as file:
@@ -12,7 +13,7 @@ def create_header_node(token, key_name, security_group_ids):
     user_data = get_user_data()
 
     response = ec2.run_instances(
-        ImageId='ami-040e71e7b8391cae4',
+        ImageId=ec2_ids[core_region_name]["t3.medium"],
         InstanceType='t3.medium',
         MinCount=1,
         MaxCount=1,
