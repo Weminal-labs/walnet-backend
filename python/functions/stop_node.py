@@ -1,10 +1,10 @@
 from utils.ec2_client import get_ec2_client
 
-def destroy_node(instance_ids):
+def stop_node(instance_ids):
     ec2 = get_ec2_client()
 
-    response = ec2.terminate_instances(InstanceIds=instance_ids)
-    instance = response['StoppingInstances'][0]
+    response = ec2.stop_instances(InstanceIds=instance_ids)
+    instance = response['TerminatingInstances'][0]
 
     return { 
         "id": instance['InstanceId'],

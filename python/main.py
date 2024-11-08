@@ -4,9 +4,13 @@ import json
 # Import functions
 from functions.create_header_node import create_header_node
 from functions.create_worker_node import create_worker_node
+from functions.destroy_node import destroy_node
+from functions.stop_node import stop_node
+from functions.describe_nodes import describe_nodes
 
 # Import utils
 from utils.response import Response
+from utils.check_type import is_array
 
 response = Response()
 
@@ -17,21 +21,36 @@ def main(args):
     raise Exception("Function name is required")
 
   result = response.getStdDict()
-  data = {
-    "ipAddress": "",
-    "info": {}
-  }
+  data = {}
 
   try:
     if fn_name == "create_header_node":
-      ipv4, info = create_header_node()
-      data["ipAddress"] = ipv4
-      data["info"] = info
-    
-    if fn_name == "create_worker_node":
-      ipv4, info = create_worker_node()
-      data["ipAddress"] = ipv4
-      data["info"] = info
+      data = create_header_node()
+    elif fn_name == "create_worker_node":
+      data = create_worker_node()
+    elif fn_name == "destroy_node":
+      instance_ids = args[2]
+
+      if not is_array(instance_ids) or len(instance_ids) < 1:
+        raise Exception("Id of Instance(s) are required to terminate")
+
+      data = destroy_node(instance_ids)
+    elif fn_name == "stop_node":
+      instance_ids = args[2]
+
+      if not is_array(instance_ids) or len(instance_ids) < 1:
+        raise Exception("Id of Instance(s) are required to stop")
+
+      data = stop_node(instance_ids)
+    elif fn_name == "describe_nodes":
+      instance_ids = args[2]
+
+      if not is_array(instance_ids) or len(instance_ids) < 1:
+        raise Exception("Id of Instance(s) are required to describe")
+      
+      data = describe_nodes(instance_ids)
+    else:
+      raise Exception(f"Function {fn_name} is not valid")
 
     result["message"] = "Execution sucessfully"
     result["error"] = 0

@@ -10,7 +10,7 @@ const Utils = require("./utils");
 
 // Import controllers
 const { clusterController } = require("../src/controllers/cluster");
-const { nodeController } = require("../src/controllers/node");
+const { nodeController, nodesController } = require("../src/controllers/node");
 
 // Import middlewares
 const verifyAddress = require("./middlewares/verifyAddress");
@@ -54,9 +54,11 @@ app.get("/check-health", (req, res) => {
 app.use(router);
 nodeController.setRouter(router);
 clusterController.setRouter(router);
+nodesController.setRouter(router);
 
 // Build handler
 nodeController.build();
+nodesController.build();
 clusterController.build();
 
 // Start server

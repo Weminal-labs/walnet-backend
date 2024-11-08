@@ -3,7 +3,7 @@ regions = {
   "sydney": "ap-southeast-2"
 }
 
-ec2_ids = {
+ec2_image_ids = {
   "singapore": {
     "t2.small": "ami-047126e50991d067b",
     "t3.medium": "ami-047126e50991d067b"

@@ -41,7 +41,7 @@ class PyProcessService {
           }
         });
 
-        py_process.stderr.on("error", (data) => {
+        py_process.stderr.on("data", (data) => {
           data = data.toString();
           reject({ message: `There is an error! - ${data}` });
         });
