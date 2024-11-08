@@ -7,7 +7,7 @@ from functions.create_worker_node import create_worker_node
 from functions.destroy_node import destroy_node
 from functions.stop_node import stop_node
 from functions.describe_nodes import describe_nodes
-from python.functions.restart_node import restart_node
+from functions.restart_node import restart_node
 from functions.check_nodes_state import check_nodes_state
 
 # Import utils
