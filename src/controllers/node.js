@@ -49,9 +49,17 @@ nodesController.appendHandler(
        * }
        */
       const { instanceIds } = req.body;
-      const data = await pyprocess.exec("describe_nodes", instanceIds);
+      const response = await pyprocess.exec(
+        "describe_nodes",
+        JSON.stringify(instanceIds)
+      );
 
-      o.data = data;
+      if (response.error) {
+        o.code = 500;
+        o.message = response.message;
+      }
+
+      o.data = response.data;
 
       return o;
     });
@@ -68,9 +76,17 @@ nodesController.appendHandler(
        * }
        */
       const { instanceIds } = req.body;
-      const data = await pyprocess.exec("check_nodes_state", instanceIds);
+      const response = await pyprocess.exec(
+        "check_nodes_state",
+        JSON.stringify(instanceIds)
+      );
 
-      o.data = data;
+      if (response.error) {
+        o.code = 500;
+        o.message = response.message;
+      }
+
+      o.data = response.data;
 
       return o;
     });
@@ -80,9 +96,14 @@ nodesController.appendHandler(
 nodeController.appendHandler(
   new Handler("/register", "post", [verifyAddress], function (req, res) {
     return this.utils.Error.handleResponseError(this, res, async function (o) {
-      const data = await pyprocess.exec("create_worker_node");
+      const response = await pyprocess.exec("create_worker_node");
 
-      o.data = data;
+      if (response.error) {
+        o.code = 500;
+        o.message = response.message;
+      }
+
+      o.data = response.data;
 
       return o;
     });
@@ -100,9 +121,17 @@ nodeController.appendHandler(
        */
       const { instanceId } = req.body;
 
-      const data = await pyprocess.exec("stop_node", [instanceId]);
+      const response = await pyprocess.exec(
+        "stop_node",
+        JSON.stringify([instanceId])
+      );
 
-      o.data = data;
+      if (response.error) {
+        o.code = 500;
+        o.message = response.message;
+      }
+
+      o.data = response.data;
 
       return o;
     });
@@ -120,9 +149,17 @@ nodeController.appendHandler(
        */
       const { instanceId } = req.body;
 
-      const data = await pyprocess.exec("destroy_node", [instanceId]);
+      const response = await pyprocess.exec(
+        "destroy_node",
+        JSON.stringify([instanceId])
+      );
 
-      o.data = data;
+      if (response.error) {
+        o.code = 500;
+        o.message = response.message;
+      }
+
+      o.data = response.data;
 
       return o;
     });
@@ -130,7 +167,7 @@ nodeController.appendHandler(
 );
 
 nodeController.appendHandler(
-  new Handler("/reboot", "post", [verifyAddress], function (req, res) {
+  new Handler("/restart", "post", [verifyAddress], function (req, res) {
     return this.utils.Error.handleResponseError(this, res, async function (o) {
       /**
        * The structure of body
@@ -140,9 +177,14 @@ nodeController.appendHandler(
        */
       const { instanceId } = req.body;
 
-      const data = await pyprocess.exec("destroy_node", [instanceId]);
+      const response = await pyprocess.exec("restart_node", instanceId);
 
-      o.data = data;
+      if (response.error) {
+        o.code = 500;
+        o.message = response.message;
+      }
+
+      o.data = response.data;
 
       return o;
     });
@@ -159,9 +201,19 @@ nodeController.appendHandler(
        * }
        */
       const { instanceId } = req.body;
-      const data = await pyprocess.exec("check_nodes_state", [instanceId]);
+      const response = await pyprocess.exec(
+        "check_nodes_state",
+        JSON.stringify([instanceId])
+      );
 
-      o.data = data[0];
+      if (response.error) {
+        o.code = 500;
+        o.message = response.message;
+      }
+
+      console.log(response);
+
+      o.data = response.data[0];
 
       return o;
     });

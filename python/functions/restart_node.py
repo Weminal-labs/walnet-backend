@@ -1,10 +1,13 @@
 from utils.ec2_client import get_ec2_client
 
-def destroy_node(instance_ids):
+from functions.describe_nodes import describe_nodes
+
+def restart_node(instance_id):
     ec2 = get_ec2_client()
 
-    response = ec2.terminate_instances(InstanceIds=instance_ids)
-    instance = response['TerminatingInstances'][0]
+    response = ec2.start_instances(InstanceIds=[instance_id])
+
+    instance = response['StartingInstances'][0]
 
     return { 
         "id": instance['InstanceId'],

@@ -7,7 +7,7 @@ from functions.create_worker_node import create_worker_node
 from functions.destroy_node import destroy_node
 from functions.stop_node import stop_node
 from functions.describe_nodes import describe_nodes
-from functions.reboot_node import reboot_node
+from python.functions.restart_node import restart_node
 from functions.check_nodes_state import check_nodes_state
 
 # Import utils
@@ -31,35 +31,35 @@ def main(args):
     elif fn_name == "create_worker_node":
       data = create_worker_node()
     elif fn_name == "destroy_node":
-      instance_ids = args[2]
+      instance_ids = json.loads(args[2])
 
       if not is_array(instance_ids) or len(instance_ids) < 1:
         raise Exception("Id of Instance(s) are required to terminate")
 
       data = destroy_node(instance_ids)
     elif fn_name == "stop_node":
-      instance_ids = args[2]
+      instance_ids = json.loads(args[2])
 
       if not is_array(instance_ids) or len(instance_ids) < 1:
         raise Exception("Id of Instance(s) are required to stop")
 
       data = stop_node(instance_ids)
     elif fn_name == "describe_nodes":
-      instance_ids = args[2]
+      instance_ids = json.loads(args[2])
 
       if not is_array(instance_ids) or len(instance_ids) < 1:
         raise Exception("Id of Instance(s) are required to describe")
       
       data = describe_nodes(instance_ids)
-    elif fn_name == "reboot_node":
+    elif fn_name == "restart_node":
       instance_id = args[2]
 
       if not is_string(instance_id):
         raise Exception("Id of Instance is invalid")
       
-      data = reboot_node(instance_id)
+      data = restart_node(instance_id)
     elif fn_name == "check_nodes_state":
-      instance_ids = args[2]
+      instance_ids = json.loads(args[2])
 
       if not is_array(instance_ids) or len(instance_ids) < 1:
         raise Exception("Id of Instance(s) are required to describe")
