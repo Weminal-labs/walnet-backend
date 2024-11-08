@@ -58,6 +58,25 @@ nodesController.appendHandler(
   })
 );
 
+nodesController.appendHandler(
+  new Handler("/check-state", "post", [verifyAddress], function (req, res) {
+    return this.utils.Error.handleResponseError(this, res, async function (o) {
+      /**
+       * The structure of body
+       * {
+       *   instanceIds: Array<string>;
+       * }
+       */
+      const { instanceIds } = req.body;
+      const data = await pyprocess.exec("check_nodes_state", instanceIds);
+
+      o.data = data;
+
+      return o;
+    });
+  })
+);
+
 nodeController.appendHandler(
   new Handler("/register", "post", [verifyAddress], function (req, res) {
     return this.utils.Error.handleResponseError(this, res, async function (o) {
@@ -76,12 +95,12 @@ nodeController.appendHandler(
       /**
        * The structure of body
        * {
-       *   instanceIds: Array<string>;
+       *   instanceId: string;
        * }
        */
-      const { instanceIds } = req.body;
+      const { instanceId } = req.body;
 
-      const data = await pyprocess.exec("stop_node", instanceIds);
+      const data = await pyprocess.exec("stop_node", [instanceId]);
 
       o.data = data;
 
@@ -96,14 +115,53 @@ nodeController.appendHandler(
       /**
        * The structure of body
        * {
-       *   instanceIds: Array<string>;
+       *   instanceId: string;
        * }
        */
-      const { instanceIds } = req.body;
+      const { instanceId } = req.body;
 
-      const data = await pyprocess.exec("destroy_node", instanceIds);
+      const data = await pyprocess.exec("destroy_node", [instanceId]);
 
       o.data = data;
+
+      return o;
+    });
+  })
+);
+
+nodeController.appendHandler(
+  new Handler("/reboot", "post", [verifyAddress], function (req, res) {
+    return this.utils.Error.handleResponseError(this, res, async function (o) {
+      /**
+       * The structure of body
+       * {
+       *   instanceId: string;
+       * }
+       */
+      const { instanceId } = req.body;
+
+      const data = await pyprocess.exec("destroy_node", [instanceId]);
+
+      o.data = data;
+
+      return o;
+    });
+  })
+);
+
+nodeController.appendHandler(
+  new Handler("/check-state", "post", [verifyAddress], function (req, res) {
+    return this.utils.Error.handleResponseError(this, res, async function (o) {
+      /**
+       * The structure of body
+       * {
+       *   instanceId: string;
+       * }
+       */
+      const { instanceId } = req.body;
+      const data = await pyprocess.exec("check_nodes_state", [instanceId]);
+
+      o.data = data[0];
 
       return o;
     });

@@ -7,10 +7,12 @@ from functions.create_worker_node import create_worker_node
 from functions.destroy_node import destroy_node
 from functions.stop_node import stop_node
 from functions.describe_nodes import describe_nodes
+from functions.reboot_node import reboot_node
+from functions.check_nodes_state import check_nodes_state
 
 # Import utils
 from utils.response import Response
-from utils.check_type import is_array
+from utils.check_type import is_array, is_string
 
 response = Response()
 
@@ -49,6 +51,20 @@ def main(args):
         raise Exception("Id of Instance(s) are required to describe")
       
       data = describe_nodes(instance_ids)
+    elif fn_name == "reboot_node":
+      instance_id = args[2]
+
+      if not is_string(instance_id):
+        raise Exception("Id of Instance is invalid")
+      
+      data = reboot_node(instance_id)
+    elif fn_name == "check_nodes_state":
+      instance_ids = args[2]
+
+      if not is_array(instance_ids) or len(instance_ids) < 1:
+        raise Exception("Id of Instance(s) are required to describe")
+      
+      data = check_nodes_state(instance_ids)
     else:
       raise Exception(f"Function {fn_name} is not valid")
 
