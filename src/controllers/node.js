@@ -139,7 +139,7 @@ nodeController.appendHandler(
 );
 
 nodeController.appendHandler(
-  new Handler("/destroy", "post", [verifyAddress], function (req, res) {
+  new Handler("/destroy", "delete", [verifyAddress], function (req, res) {
     return this.utils.Error.handleResponseError(this, res, async function (o) {
       /**
        * The structure of body

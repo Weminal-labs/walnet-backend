@@ -6,7 +6,7 @@ from utils.regions import ec2_image_ids, core_region_name
 from functions.describe_nodes import describe_nodes
 
 def get_user_data():
-    script_path = os.path.join(os.path.dirname(__file__), '..', 'script/user_data_worker_node.sh')
+    script_path = os.path.join(os.path.dirname(__file__), '..', 'scripts/user_data_worker_node.sh')
     with open(script_path, 'r') as file:
         user_data = file.read()
     return user_data
