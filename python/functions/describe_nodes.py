@@ -19,7 +19,8 @@ def describe_nodes(instance_ids):
         "cpu": {
             "core": _instance["CpuOptions"]["CoreCount"],
             "threadPerCore": _instance["CpuOptions"]["ThreadsPerCore"]
-        }
+        },
+        "securityGroups": [{"groupId": item["GroupId"]} for item in _instance['SecurityGroups']]
       }      
       instances.append(instance)
 

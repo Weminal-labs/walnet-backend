@@ -28,18 +28,26 @@ def main(args):
   try:
     if fn_name == "create_header_node":
       subnet_id = args[2]
+      allowed_cidrs = json.loads(args[3])
 
       if not is_string(subnet_id):
         raise Exception("Id of Instance is invalid")
+      
+      if not is_array(allowed_cidrs) or len(allowed_cidrs) < 1:
+        raise Exception("Allowed CIDR Block is invalid")
 
-      data = create_header_node(subnet_id)
+      data = create_header_node(subnet_id, allowed_cidrs)
     elif fn_name == "create_worker_node":
       subnet_id = args[2]
+      allowed_cidrs = json.loads(args[3])
 
       if not is_string(subnet_id):
         raise Exception("Id of Instance is invalid")
+      
+      if not is_array(allowed_cidrs) or len(allowed_cidrs) < 1:
+        raise Exception("Allowed CIDR Block is invalid")
 
-      data = create_worker_node(subnet_id)
+      data = create_worker_node(subnet_id, allowed_cidrs)
     elif fn_name == "destroy_node":
       instance_ids = json.loads(args[2])
 

@@ -4,6 +4,7 @@ from utils.ec2_client import get_ec2_client
 from utils.regions import ec2_image_ids, core_region_name
 
 from functions.describe_nodes import describe_nodes
+from functions.create_security_group import create_security_group
 
 def get_user_data():
     script_path = os.path.join(os.path.dirname(__file__), '..', 'scripts/user_data_worker_node.sh')
@@ -11,10 +12,22 @@ def get_user_data():
         user_data = file.read()
     return user_data
 
-def create_worker_node(subnet_id = ''):
+def create_worker_node(subnet_id = '', allowed_cidrs = None):
     ec2 = get_ec2_client()
     # user_data = get_user_data(token, public_ip_header_node)
     user_data = get_user_data()
+
+    if allowed_cidrs == None or len(allowed_cidrs) < 1:
+        allowed_cidrs = [ '0.0.0.0/0' ]
+
+    security_group_id = create_security_group("Workder SG", [
+        {
+            'IpProtocol': '-1',
+            'FromPort': 0,
+            'ToPort': 65535,
+            'IpRanges': [{"CidrIp": cidr} for cidr in allowed_cidrs]
+        }
+    ])
 
     response = ec2.run_instances(
         ImageId=ec2_image_ids[core_region_name]['t2.small'],
@@ -25,6 +38,7 @@ def create_worker_node(subnet_id = ''):
         # SecurityGroupIds=security_group_ids,
         UserData=user_data,
         SubnetId=subnet_id,
+        SecurityGroupIds=[security_group_id],
         TagSpecifications=[
             {
                 'ResourceType': 'instance',
