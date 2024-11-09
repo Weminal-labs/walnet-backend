@@ -4,7 +4,7 @@ const { suiClient } = require("../sui");
 
 const hexRegex = /^0x[0-9a-fA-F]{64}$/;
 
-function verifyAddress(req, res, next) {
+function verifyUser(req, res, next) {
   return Utils.Error.handleResponseError(this, res, async function (o) {
     const address = req.headers["user-address"];
 
@@ -77,4 +77,4 @@ function verifyAddress(req, res, next) {
   });
 }
 
-module.exports = verifyAddress;
+module.exports = verifyUser;

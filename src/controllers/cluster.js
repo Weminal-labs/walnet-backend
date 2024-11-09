@@ -29,7 +29,9 @@ const pyprocess = new PyProcessService();
 clusterController.appendHandler(
   new Handler("/deploy", "post", [verifyAddress], function (req, res) {
     return this.utils.Error.handleResponseError(this, res, async function (o) {
-      const data = await pyprocess.exec("create_header_node");
+      const { subnetId = "" } = req.body;
+
+      const data = await pyprocess.exec("create_header_node", subnetId);
 
       o.data = data;
 

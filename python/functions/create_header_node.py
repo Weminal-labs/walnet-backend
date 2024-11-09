@@ -11,7 +11,7 @@ def get_user_data():
         user_data = file.read()
     return user_data
 
-def create_header_node():
+def create_header_node(subnet_id = ''):
     ec2 = get_ec2_client()
     # user_data = get_user_data(token)
     user_data = get_user_data()
@@ -24,6 +24,7 @@ def create_header_node():
         # KeyName=key_name,
         # SecurityGroupIds=security_group_ids,
         UserData=user_data,
+        SubnetId=subnet_id,
         TagSpecifications=[
             {
                 'ResourceType': 'instance',

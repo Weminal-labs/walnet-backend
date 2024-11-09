@@ -27,9 +27,19 @@ def main(args):
 
   try:
     if fn_name == "create_header_node":
-      data = create_header_node()
+      subnet_id = args[2]
+
+      if not is_string(subnet_id):
+        raise Exception("Id of Instance is invalid")
+
+      data = create_header_node(subnet_id)
     elif fn_name == "create_worker_node":
-      data = create_worker_node()
+      subnet_id = args[2]
+
+      if not is_string(subnet_id):
+        raise Exception("Id of Instance is invalid")
+
+      data = create_worker_node(subnet_id)
     elif fn_name == "destroy_node":
       instance_ids = json.loads(args[2])
 

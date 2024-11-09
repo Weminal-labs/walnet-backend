@@ -96,7 +96,9 @@ nodesController.appendHandler(
 nodeController.appendHandler(
   new Handler("/register", "post", [verifyAddress], function (req, res) {
     return this.utils.Error.handleResponseError(this, res, async function (o) {
-      const response = await pyprocess.exec("create_worker_node");
+      const { subnetId = "" } = req.body;
+
+      const response = await pyprocess.exec("create_worker_node", subnetId);
 
       if (response.error) {
         o.code = 500;

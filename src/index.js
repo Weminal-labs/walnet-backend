@@ -11,6 +11,7 @@ const Utils = require("./utils");
 // Import controllers
 const { clusterController } = require("../src/controllers/cluster");
 const { nodeController, nodesController } = require("../src/controllers/node");
+const { taskController } = require("../src/controllers/task");
 
 // Import middlewares
 const verifyAddress = require("./middlewares/verifyAddress");
@@ -55,11 +56,13 @@ app.use(router);
 nodeController.setRouter(router);
 clusterController.setRouter(router);
 nodesController.setRouter(router);
+taskController.setRouter(router);
 
 // Build handler
 nodeController.build();
 nodesController.build();
 clusterController.build();
+taskController.build();
 
 // Start server
 const PORT = process.env.PORT || 5000;
