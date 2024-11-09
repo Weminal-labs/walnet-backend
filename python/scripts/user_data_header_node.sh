@@ -25,14 +25,11 @@ pip install --upgrade pip
 # Install Ray and Flask
 pip install -U "ray[default]" flask
 
-# Get the local IP address of the instance
-LOCAL_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
-
 # Download the source code for the header server
-curl -o $WORK_DIR/header.py https://raw.githubusercontent.com/Weminal-labs/walnet-backend/refs/heads/main/python/ray/header.py
+curl -o $WORK_DIR/main.py https://raw.githubusercontent.com/Weminal-labs/walnet-backend/refs/heads/main/python/ray/header.py
 
 # Start Ray head node with the local IP address
-ray start --head --node-ip-address=$LOCAL_IP --port=8000 --dashboard-host=0.0.0.0
+ray start --head --node-ip-address=0.0.0.0 --port=8000
 
 # Run the Flask application
-python3 $WORK_DIR/header.py
+python3 $WORK_DIR/main.py

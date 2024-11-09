@@ -7,10 +7,10 @@ from utils.check_type import is_string
 from functions.describe_nodes import describe_nodes
 from functions.create_security_group import create_security_group
 
-def get_user_data():
+def get_user_data(node_ip):
     script_path = os.path.join(os.path.dirname(__file__), '..', 'scripts/user_data_header_node.sh')
     with open(script_path, 'r') as file:
-        user_data = file.read()
+        user_data = user_data.replace('{LOCAL_IP}', node_ip)
     return user_data
 
 def create_header_node(subnet_id = '', vpc_id = '', allowed_cidrs = None):
