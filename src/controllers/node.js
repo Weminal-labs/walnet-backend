@@ -96,7 +96,13 @@ nodesController.appendHandler(
 nodeController.appendHandler(
   new Handler("/register", "post", [verifyAddress], function (req, res) {
     return this.utils.Error.handleResponseError(this, res, async function (o) {
-      const { subnetId = "" } = req.body;
+      const subnetId = process.env.PRIVATE_SUBNET_1;
+
+      if (!subnetId) {
+        o.code = 500;
+        console.error("Subnet Id not found");
+        throw new Error("There is some errors in server.");
+      }
 
       const response = await pyprocess.exec("create_worker_node", subnetId);
 
@@ -212,8 +218,6 @@ nodeController.appendHandler(
         o.code = 500;
         o.message = response.message;
       }
-
-      console.log(response);
 
       o.data = response.data[0];
 

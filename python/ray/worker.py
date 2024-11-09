@@ -6,6 +6,14 @@ import ray
 
 app = Flask(__name__)
 
+# Define the /check-health
+@app.route('/check-health')
+def check_health():
+    try:
+        return jsonify({"status": "Health OK"}), 200
+    except Exception as e:
+        return jsonify({"status": "Health Not OK"}), 400
+
 # Define the /trigger-task endpoint
 @app.route('/trigger-join-cluster', methods=['POST'])
 def trigger_task():

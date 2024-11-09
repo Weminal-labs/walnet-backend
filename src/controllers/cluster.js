@@ -29,7 +29,13 @@ const pyprocess = new PyProcessService();
 clusterController.appendHandler(
   new Handler("/deploy", "post", [verifyAddress], function (req, res) {
     return this.utils.Error.handleResponseError(this, res, async function (o) {
-      const { subnetId = "" } = req.body;
+      const subnetId = process.env.PRIVATE_SUBNET_1;
+
+      if (!subnetId) {
+        o.code = 500;
+        console.error("Subnet Id not found");
+        throw new Error("There is some errors in server.");
+      }
 
       const data = await pyprocess.exec("create_header_node", subnetId);
 

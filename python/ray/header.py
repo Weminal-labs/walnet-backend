@@ -37,6 +37,14 @@ def execute_python(code):
     # Get all output as a single string
     return output.getvalue()
 
+# Define the /check-health
+@app.route('/check-health')
+def check_health():
+    try:
+        return jsonify({"status": "Health OK"}), 200
+    except Exception as e:
+        return jsonify({"status": "Health Not OK"}), 400
+
 # Route to trigger a task
 @app.route('/trigger-task', methods=['POST'])
 def trigger_task():

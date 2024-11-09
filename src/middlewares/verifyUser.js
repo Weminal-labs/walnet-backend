@@ -2,6 +2,9 @@ const axios = require("axios");
 
 const { suiClient } = require("../sui");
 
+// Import utils
+const Utils = require("../utils");
+
 const hexRegex = /^0x[0-9a-fA-F]{64}$/;
 
 function verifyUser(req, res, next) {
