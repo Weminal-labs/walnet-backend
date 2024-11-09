@@ -16,7 +16,7 @@ const taskController = new Controller("/task");
 const pyprocess = new PyProcessService();
 
 taskController.appendHandler(
-  new Handler("/deploy", "post", [verifyAddress], function (req, res) {
+  new Handler("/execute-python", "post", [verifyAddress], function (req, res) {
     return this.utils.Error.handleResponseError(this, res, async function (o) {
       const { headerIp, code } = req.body;
 
@@ -30,11 +30,14 @@ taskController.appendHandler(
         throw new Error("Code not found");
       }
 
-      const data = await axios.post(`http://${headerIp}:9000/execute-python`, {
-        code: code,
-      });
+      const response = await axios.post(
+        `http://${headerIp}:9000/execute-python`,
+        {
+          code: code,
+        }
+      );
 
-      o.data = data;
+      o.data = response.data;
 
       return o;
     });

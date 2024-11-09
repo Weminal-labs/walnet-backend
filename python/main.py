@@ -17,96 +17,106 @@ from utils.check_type import is_array, is_string
 response = Response()
 
 def main(args):
-  fn_name = args[1]
+    fn_name = args[1]
 
-  if not fn_name:
-    raise Exception("Function name is required")
+    if not fn_name:
+        raise Exception("Function name is required")
 
-  result = response.getStdDict()
-  data = {}
+    result = response.getStdDict()
+    data = {}
 
-  try:
-    if fn_name == "create_header_node":
-      vpc_id = args[2]
-      user_address = vpc_id = args[3]
-      subnet_id = args[4]
-      allowed_cidrs = json.loads(args[5])
+    try:
+        if fn_name == "create_header_node":
+            vpc_id = args[2]
+            user_address = args[3]
+            subnet_id = args[4]
+            allowed_cidrs = json.loads(args[5])
 
-      if not is_string(vpc_id):
-        raise Exception("VPC isn't specified")
+            if not is_string(vpc_id):
+                raise Exception("VPC isn't specified")
 
-      if not is_string(subnet_id):
-        raise Exception("Id of Instance is invalid")
-      
-      if not is_array(allowed_cidrs) or len(allowed_cidrs) < 1:
-        raise Exception("Allowed CIDR Block is invalid")
+            if not is_string(subnet_id):
+                raise Exception("Id of Instance is invalid")
+            
+            if not is_array(allowed_cidrs) or len(allowed_cidrs) < 1:
+                raise Exception("Allowed CIDR Block is invalid")
 
-      data = create_header_node(vpc_id, user_address, subnet_id, allowed_cidrs)
-    elif fn_name == "create_worker_node":
-      vpc_id = args[2]
-      user_address = vpc_id = args[3]
-      subnet_id = args[4]
-      allowed_cidrs = json.loads(args[5])
+            data = create_header_node(
+                vpc_id=vpc_id,
+                user_address=user_address,
+                subnet_id=subnet_id,
+                allowed_cidrs=allowed_cidrs
+            )
+        elif fn_name == "create_worker_node":
+            vpc_id = args[2]
+            user_address = args[3]
+            subnet_id = args[4]
+            allowed_cidrs = json.loads(args[5])
 
-      if not is_string(vpc_id):
-        raise Exception("VPC isn't specified")
+            if not is_string(vpc_id):
+                raise Exception("VPC isn't specified")
 
-      if not is_string(subnet_id):
-        raise Exception("Id of Instance is invalid")
-      
-      if not is_array(allowed_cidrs) or len(allowed_cidrs) < 1:
-        raise Exception("Allowed CIDR Block is invalid")
+            if not is_string(subnet_id):
+                raise Exception("Id of Instance is invalid")
+            
+            if not is_array(allowed_cidrs) or len(allowed_cidrs) < 1:
+                raise Exception("Allowed CIDR Block is invalid")
 
-      data = create_worker_node(vpc_id, user_address, subnet_id, allowed_cidrs)
-    elif fn_name == "destroy_node":
-      instance_ids = json.loads(args[2])
+            data = create_worker_node(
+                vpc_id=vpc_id,
+                user_address=user_address,
+                subnet_id=subnet_id,
+                allowed_cidrs=allowed_cidrs
+            )
+        elif fn_name == "destroy_node":
+            instance_ids = json.loads(args[2])
 
-      if not is_array(instance_ids) or len(instance_ids) < 1:
-        raise Exception("Id of Instance(s) are required to terminate")
+            if not is_array(instance_ids) or len(instance_ids) < 1:
+                raise Exception("Id of Instance(s) are required to terminate")
 
-      data = destroy_node(instance_ids)
-    elif fn_name == "stop_node":
-      instance_ids = json.loads(args[2])
+            data = destroy_node(instance_ids)
+        elif fn_name == "stop_node":
+            instance_ids = json.loads(args[2])
 
-      if not is_array(instance_ids) or len(instance_ids) < 1:
-        raise Exception("Id of Instance(s) are required to stop")
+            if not is_array(instance_ids) or len(instance_ids) < 1:
+                raise Exception("Id of Instance(s) are required to stop")
 
-      data = stop_node(instance_ids)
-    elif fn_name == "describe_nodes":
-      instance_ids = json.loads(args[2])
+            data = stop_node(instance_ids)
+        elif fn_name == "describe_nodes":
+            instance_ids = json.loads(args[2])
 
-      if not is_array(instance_ids) or len(instance_ids) < 1:
-        raise Exception("Id of Instance(s) are required to describe")
-      
-      data = describe_nodes(instance_ids)
-    elif fn_name == "restart_node":
-      instance_id = args[2]
+            if not is_array(instance_ids) or len(instance_ids) < 1:
+                raise Exception("Id of Instance(s) are required to describe")
+            
+            data = describe_nodes(instance_ids)
+        elif fn_name == "restart_node":
+            instance_id = args[2]
 
-      if not is_string(instance_id):
-        raise Exception("Id of Instance is invalid")
-      
-      data = restart_node(instance_id)
-    elif fn_name == "check_nodes_state":
-      instance_ids = json.loads(args[2])
+            if not is_string(instance_id):
+                raise Exception("Id of Instance is invalid")
+            
+            data = restart_node(instance_id)
+        elif fn_name == "check_nodes_state":
+            instance_ids = json.loads(args[2])
 
-      if not is_array(instance_ids) or len(instance_ids) < 1:
-        raise Exception("Id of Instance(s) are required to describe")
-      
-      data = check_nodes_state(instance_ids)
-    else:
-      raise Exception(f"Function {fn_name} is not valid")
+            if not is_array(instance_ids) or len(instance_ids) < 1:
+                raise Exception("Id of Instance(s) are required to describe")
+            
+            data = check_nodes_state(instance_ids)
+        else:
+            raise Exception(f"Function {fn_name} is not valid")
 
-    result["message"] = "Execution sucessfully"
-    result["error"] = 0
-    result["data"] = data
+        result["message"] = "Execution sucessfully"
+        result["error"] = 0
+        result["data"] = data
 
-    print(json.dumps(result))
-  except Exception as e:
-    result["message"] = e
-    result["error"] = 1
-    print(json.dumps(result))
-  finally:
-    sys.stdout.flush()
+        print(json.dumps(result))
+    except Exception as e:
+        result["message"] = e
+        result["error"] = 1
+        print(json.dumps(result))
+    finally:
+        sys.stdout.flush()
 
 if __name__ == "__main__":
-  main(sys.argv)
+    main(sys.argv)

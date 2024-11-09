@@ -1,5 +1,7 @@
 #!/bin/bash
 
+exec > /var/log/user-data.log 2>&1
+
 # Set up working directory
 WORK_DIR=/home/root
 

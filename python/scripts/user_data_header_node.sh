@@ -1,16 +1,18 @@
 #!/bin/bash
 
+exec > /var/log/user-data.log 2>&1
+
 # Set up working directory
-WORK_DIR=/home/root
+WORK_DIR=$HOME
 
 # Stop script if an error occurs
 set -e
 
-# Update package list
+# Update package list with sudo
 apt update -y
 
-# Install necessary packages
-apt install python3 python3-pip python3.10-venv curl -y
+# Install necessary packages with sudo
+apt install -y python3 python3-pip python3-venv curl
 
 # Create a directory for the virtual environment
 mkdir -p $WORK_DIR/ray_env  
