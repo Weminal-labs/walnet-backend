@@ -97,6 +97,7 @@ nodeController.appendHandler(
   new Handler("/register", "post", [verifyAddress], function (req, res) {
     return this.utils.Error.handleResponseError(this, res, async function (o) {
       const vpc_id = process.env.VPC_ID;
+      const userAddress = req.headers["user-address"];
       const subnetId = process.env.PRIVATE_SUBNET_1;
       const allowedCidrs = [
         process.env.PUBLIC_SUBNET_1_CIDR,
@@ -114,6 +115,7 @@ nodeController.appendHandler(
       const response = await pyprocess.exec(
         "create_worker_node",
         vpc_id,
+        userAddress,
         subnetId,
         JSON.stringify(allowedCidrs)
       );

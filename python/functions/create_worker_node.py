@@ -3,6 +3,7 @@ import os
 from utils.ec2_client import get_ec2_client
 from utils.check_type import is_string
 from utils.regions import ec2_image_ids, core_region_name
+from utils.generate_keyname import generate_security_group_name
 
 from functions.describe_nodes import describe_nodes
 from functions.create_security_group import create_security_group
@@ -13,7 +14,7 @@ def get_user_data():
         user_data = file.read()
     return user_data
 
-def create_worker_node(subnet_id = '', vpc_id = '', allowed_cidrs = None):
+def create_worker_node(vpc_id = '', user_address = '', subnet_id = '', allowed_cidrs = None):
     security_group_id = ''
 
     try:
@@ -24,7 +25,9 @@ def create_worker_node(subnet_id = '', vpc_id = '', allowed_cidrs = None):
         if allowed_cidrs == None or len(allowed_cidrs) < 1:
             allowed_cidrs = [ '0.0.0.0/0' ]
 
-        security_group_id = create_security_group(vpc_id, "Workder SG", "Allow Header accesses", [
+        security_group_name = generate_security_group_name(user_address)
+
+        security_group_id = create_security_group(vpc_id, security_group_name, "Allow Header accesses", [
             {
                 'IpProtocol': '-1',
                 'FromPort': 0,

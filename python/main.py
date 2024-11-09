@@ -28,8 +28,9 @@ def main(args):
   try:
     if fn_name == "create_header_node":
       vpc_id = args[2]
-      subnet_id = args[3]
-      allowed_cidrs = json.loads(args[4])
+      user_address = vpc_id = args[3]
+      subnet_id = args[4]
+      allowed_cidrs = json.loads(args[5])
 
       if not is_string(vpc_id):
         raise Exception("VPC isn't specified")
@@ -40,11 +41,12 @@ def main(args):
       if not is_array(allowed_cidrs) or len(allowed_cidrs) < 1:
         raise Exception("Allowed CIDR Block is invalid")
 
-      data = create_header_node(subnet_id, vpc_id, allowed_cidrs)
+      data = create_header_node(vpc_id, user_address, subnet_id, allowed_cidrs)
     elif fn_name == "create_worker_node":
       vpc_id = args[2]
-      subnet_id = args[3]
-      allowed_cidrs = json.loads(args[4])
+      user_address = vpc_id = args[3]
+      subnet_id = args[4]
+      allowed_cidrs = json.loads(args[5])
 
       if not is_string(vpc_id):
         raise Exception("VPC isn't specified")
@@ -55,7 +57,7 @@ def main(args):
       if not is_array(allowed_cidrs) or len(allowed_cidrs) < 1:
         raise Exception("Allowed CIDR Block is invalid")
 
-      data = create_worker_node(subnet_id, vpc_id, allowed_cidrs)
+      data = create_worker_node(vpc_id, user_address, subnet_id, allowed_cidrs)
     elif fn_name == "destroy_node":
       instance_ids = json.loads(args[2])
 

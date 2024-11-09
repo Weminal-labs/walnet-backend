@@ -3,17 +3,18 @@ import os
 from utils.ec2_client import get_ec2_client
 from utils.regions import ec2_image_ids, core_region_name
 from utils.check_type import is_string
+from utils.generate_keyname import generate_security_group_name
 
 from functions.describe_nodes import describe_nodes
 from functions.create_security_group import create_security_group
 
-def get_user_data(node_ip):
+def get_user_data():
     script_path = os.path.join(os.path.dirname(__file__), '..', 'scripts/user_data_header_node.sh')
     with open(script_path, 'r') as file:
-        user_data = user_data.replace('{LOCAL_IP}', node_ip)
+        user_data = file.read()
     return user_data
 
-def create_header_node(subnet_id = '', vpc_id = '', allowed_cidrs = None):
+def create_header_node(vpc_id = '', user_address = '', subnet_id = '', allowed_cidrs = None):
     security_group_id = ''
 
     try:
@@ -24,7 +25,9 @@ def create_header_node(subnet_id = '', vpc_id = '', allowed_cidrs = None):
         if allowed_cidrs == None or len(allowed_cidrs) < 1:
             allowed_cidrs = [ '0.0.0.0/0' ]
 
-        security_group_id = create_security_group(vpc_id, "Header SG", "Allow Backend and Worker access", [
+        security_group_name = generate_security_group_name(user_address)
+
+        security_group_id = create_security_group(vpc_id, security_group_name, "Allow Backend and Worker access", [
             {
                 'IpProtocol': 'tcp',
                 'FromPort': 9000,
