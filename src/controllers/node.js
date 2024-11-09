@@ -96,7 +96,14 @@ nodesController.appendHandler(
 nodeController.appendHandler(
   new Handler("/register", "post", [verifyAddress], function (req, res) {
     return this.utils.Error.handleResponseError(this, res, async function (o) {
+      const vpc_id = process.env.VPC_ID;
       const subnetId = process.env.PRIVATE_SUBNET_1;
+      const allowedCidrs = [
+        process.env.PUBLIC_SUBNET_1_CIDR,
+        process.env.PUBLIC_SUBNET_2_CIDR,
+        process.env.PRIVATE_SUBNET_1_CIDR,
+        process.env.PRIVATE_SUBNET_2_CIDR,
+      ];
 
       if (!subnetId) {
         o.code = 500;
@@ -104,7 +111,12 @@ nodeController.appendHandler(
         throw new Error("There is some errors in server.");
       }
 
-      const response = await pyprocess.exec("create_worker_node", subnetId);
+      const response = await pyprocess.exec(
+        "create_worker_node",
+        vpc_id,
+        subnetId,
+        JSON.stringify(allowedCidrs)
+      );
 
       if (response.error) {
         o.code = 500;

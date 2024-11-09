@@ -29,7 +29,14 @@ const pyprocess = new PyProcessService();
 clusterController.appendHandler(
   new Handler("/deploy", "post", [verifyAddress], function (req, res) {
     return this.utils.Error.handleResponseError(this, res, async function (o) {
+      const vpc_id = process.env.VPC_ID;
       const subnetId = process.env.PRIVATE_SUBNET_1;
+      const allowedCidrs = [
+        process.env.PUBLIC_SUBNET_1_CIDR,
+        process.env.PUBLIC_SUBNET_2_CIDR,
+        process.env.PRIVATE_SUBNET_1_CIDR,
+        process.env.PRIVATE_SUBNET_2_CIDR,
+      ];
 
       if (!subnetId) {
         o.code = 500;
@@ -37,7 +44,12 @@ clusterController.appendHandler(
         throw new Error("There is some errors in server.");
       }
 
-      const data = await pyprocess.exec("create_header_node", subnetId);
+      const data = await pyprocess.exec(
+        "create_header_node",
+        vpc_id,
+        subnetId,
+        JSON.stringify(allowedCidrs)
+      );
 
       o.data = data;
 

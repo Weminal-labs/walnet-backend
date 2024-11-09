@@ -4,9 +4,6 @@ import subprocess
 import io
 import sys
 
-# Initialize Ray
-ray.init(address='auto')  # Adjust according to your Ray cluster setup
-
 app = Flask(__name__)
 
 # Define a simple task
