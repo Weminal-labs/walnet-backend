@@ -25,6 +25,8 @@
 //     "name": string
 //   }
 // }
+const axios = require("axios");
+
 const { Handler, Controller } = require("../classes/controller");
 
 // Import middlewares
@@ -248,6 +250,41 @@ nodeController.appendHandler(
       }
 
       o.data = response.data[0];
+
+      return o;
+    });
+  })
+);
+
+nodeController.appendHandler(
+  new Handler("/check-application", "post", [verifyAddress], function (
+    req,
+    res
+  ) {
+    return this.utils.Error.handleResponseError(this, res, async function (o) {
+      /**
+       * The structure of body
+       * {
+       *   instanceId: string;
+       *   typeNode: "header" | "worker"
+       * }
+       */
+      const { ip, type } = req.body;
+
+      if (!ip) throw new Error("The IP of Node is required");
+
+      if (!type) throw new Error("The type of Node is required");
+
+      const port = type === "header" ? 9000 : 9020;
+
+      const response = await axios.get(`http://${ip}:${port}/check-health`);
+
+      if (response.status !== 200) {
+        o.code = 500;
+        throw new Error(response.message);
+      }
+
+      o.data = response.data;
 
       return o;
     });
