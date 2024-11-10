@@ -24,8 +24,6 @@ const { deployCluster } = require("../services/node");
 const clusterController = new Controller("/cluster");
 const clustersController = new Controller("/clusters");
 
-const pyprocess = new PyProcessService();
-
 clusterController.appendHandler(
   new Handler("/deploy", "post", [verifyAddress], function (req, res) {
     return this.utils.Error.handleResponseError(this, res, async function (o) {
