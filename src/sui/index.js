@@ -33,7 +33,7 @@ const suiAddress = suiPublicKey.toSuiAddress();
 async function query(address, queryFunc, filter) {
   let responseData;
 
-  return Utils.Error.handleInterchangeError(this, res, async function (o) {
+  return Utils.Error.handleInterchangeError(this, async function (o) {
     const response = await axios.post(
       SUI_NETWORK_ENDPOINT,
       {
@@ -73,12 +73,14 @@ async function query(address, queryFunc, filter) {
     o.data = responseData.result.data;
     o.message = "Query successfully";
 
+    console.log("Response data:", responseData);
+
     return o;
   });
 }
 
 async function sign(address, target, args, typeArgs = []) {
-  return Utils.Error.handleInterchangeError(this, res, async function (o) {
+  return Utils.Error.handleInterchangeError(this, async function (o) {
     const txn = new Transaction();
 
     txn.moveCall({

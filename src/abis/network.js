@@ -7,9 +7,9 @@ const modules = {
 
 const Sui_NetworkModule = {
   structs: {
-    node: `${packageId}::${modules}::Node`,
-    cluster: `${packageId}::${modules}::Cluster`,
-    task: `${packageId}::${modules}::Task`,
+    node: `${packageId}::${modules.network}::Node`,
+    cluster: `${packageId}::${modules.network}::Cluster`,
+    task: `${packageId}::${modules.network}::Task`,
   },
   functions: {},
 };

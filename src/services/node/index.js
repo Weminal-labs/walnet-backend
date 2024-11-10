@@ -10,7 +10,7 @@ const Utils = require("../../utils");
 const pyprocess = new PyProcessService();
 
 async function queryNodeMetadata(data) {
-  return Utils.Error.handleInterchangeError(this, res, async function (o) {
+  return Utils.Error.handleInterchangeError(this, async function (o) {
     const { address } = data;
 
     if (!address) throw new Error("Sui Addresss is required");
@@ -23,7 +23,7 @@ async function queryNodeMetadata(data) {
       ],
     });
 
-    if (result.code) throw new Error(result.message);
+    if (!result.code) throw new Error(result.message);
 
     o.data = result.data;
 

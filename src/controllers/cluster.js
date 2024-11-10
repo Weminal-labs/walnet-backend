@@ -42,7 +42,7 @@ clusterController.appendHandler(
         throw new Error("There is some errors in server.");
       }
 
-      const data = await deployCluster(
+      const response = await deployCluster(
         "create_header_node",
         vpcId,
         userAddress,
@@ -50,7 +50,12 @@ clusterController.appendHandler(
         allowedCidrs
       );
 
-      o.data = data;
+      if (response.error) {
+        o.code = 500;
+        throw new Error(response.message);
+      }
+
+      o.data = response.data;
 
       return o;
     });

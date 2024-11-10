@@ -105,9 +105,9 @@ nodesController.appendHandler(
       const { address } = req.body;
       const response = await queryNodeMetadata({ address });
 
-      if (response.error) {
+      if (!response.code) {
         o.code = 500;
-        o.message = response.message;
+        throw new Error(response.message);
       }
 
       o.data = response;
@@ -145,7 +145,7 @@ nodeController.appendHandler(
 
       if (response.error) {
         o.code = 500;
-        o.message = response.message;
+        throw new Error(response.message);
       }
 
       o.data = response.data;
@@ -170,7 +170,7 @@ nodeController.appendHandler(
 
       if (response.error) {
         o.code = 500;
-        o.message = response.message;
+        throw new Error(response.message);
       }
 
       o.data = response.data;
@@ -195,7 +195,7 @@ nodeController.appendHandler(
 
       if (response.error) {
         o.code = 500;
-        o.message = response.message;
+        throw new Error(response.message);
       }
 
       o.data = response.data;
@@ -220,7 +220,7 @@ nodeController.appendHandler(
 
       if (response.error) {
         o.code = 500;
-        o.message = response.message;
+        throw new Error(response.message);
       }
 
       o.data = response.data;
@@ -244,7 +244,7 @@ nodeController.appendHandler(
 
       if (response.error) {
         o.code = 500;
-        o.message = response.message;
+        throw new Error(response.message);
       }
 
       o.data = response.data[0];
