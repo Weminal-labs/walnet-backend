@@ -25,19 +25,25 @@
 //     "name": string
 //   }
 // }
-
 const { Handler, Controller } = require("../classes/controller");
 
 // Import middlewares
 const verifyAddress = require("../middlewares/verifyAddress");
 
 // Import services
-const { PyProcessService } = require("../services/python");
+const {
+  queryNodeMetadata,
+  registerWorkerNode,
+  stopNode,
+  restartNode,
+  checkNodesState,
+  checkNodeState,
+  destroyNode,
+  describeNodes,
+} = require("../services/node");
 
 const nodeController = new Controller("/node");
 const nodesController = new Controller("/nodes");
-
-const pyprocess = new PyProcessService();
 
 nodesController.appendHandler(
   new Handler("/", "post", [verifyAddress], function (req, res) {
@@ -49,10 +55,7 @@ nodesController.appendHandler(
        * }
        */
       const { instanceIds } = req.body;
-      const response = await pyprocess.exec(
-        "describe_nodes",
-        JSON.stringify(instanceIds)
-      );
+      const response = await describeNodes(instanceIds);
 
       if (response.error) {
         o.code = 500;
@@ -76,10 +79,7 @@ nodesController.appendHandler(
        * }
        */
       const { instanceIds } = req.body;
-      const response = await pyprocess.exec(
-        "check_nodes_state",
-        JSON.stringify(instanceIds)
-      );
+      const response = await checkNodesState(instanceIds);
 
       if (response.error) {
         o.code = 500;
@@ -93,10 +93,34 @@ nodesController.appendHandler(
   })
 );
 
+nodesController.appendHandler(
+  new Handler("/query", "post", [verifyAddress], function (req, res) {
+    return this.utils.Error.handleResponseError(this, res, async function (o) {
+      /**
+       * The structure of body
+       * {
+       *   instanceIds: Array<string>;
+       * }
+       */
+      const { address } = req.body;
+      const response = await queryNodeMetadata({ address });
+
+      if (response.error) {
+        o.code = 500;
+        o.message = response.message;
+      }
+
+      o.data = response;
+
+      return o;
+    });
+  })
+);
+
 nodeController.appendHandler(
   new Handler("/register", "post", [verifyAddress], function (req, res) {
     return this.utils.Error.handleResponseError(this, res, async function (o) {
-      const vpc_id = process.env.VPC_ID;
+      const vpcId = process.env.VPC_ID;
       const userAddress = req.headers["user-address"];
       const subnetId = process.env.PRIVATE_SUBNET_1;
       const allowedCidrs = [
@@ -108,16 +132,15 @@ nodeController.appendHandler(
 
       if (!subnetId) {
         o.code = 500;
-        console.error("Subnet Id not found");
         throw new Error("There is some errors in server.");
       }
 
-      const response = await pyprocess.exec(
+      const response = await registerWorkerNode(
         "create_worker_node",
-        vpc_id,
+        vpcId,
         userAddress,
         subnetId,
-        JSON.stringify(allowedCidrs)
+        allowedCidrs
       );
 
       if (response.error) {
@@ -143,10 +166,7 @@ nodeController.appendHandler(
        */
       const { instanceId } = req.body;
 
-      const response = await pyprocess.exec(
-        "stop_node",
-        JSON.stringify([instanceId])
-      );
+      const response = await stopNode(instanceId);
 
       if (response.error) {
         o.code = 500;
@@ -171,10 +191,7 @@ nodeController.appendHandler(
        */
       const { instanceId } = req.body;
 
-      const response = await pyprocess.exec(
-        "destroy_node",
-        JSON.stringify([instanceId])
-      );
+      const response = await destroyNode(instanceId);
 
       if (response.error) {
         o.code = 500;
@@ -199,7 +216,7 @@ nodeController.appendHandler(
        */
       const { instanceId } = req.body;
 
-      const response = await pyprocess.exec("restart_node", instanceId);
+      const response = await restartNode(instanceId);
 
       if (response.error) {
         o.code = 500;
@@ -223,10 +240,7 @@ nodeController.appendHandler(
        * }
        */
       const { instanceId } = req.body;
-      const response = await pyprocess.exec(
-        "check_nodes_state",
-        JSON.stringify([instanceId])
-      );
+      const response = await checkNodeState(instanceId);
 
       if (response.error) {
         o.code = 500;

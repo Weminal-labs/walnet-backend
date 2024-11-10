@@ -1,3 +1,5 @@
+const axios = require("axios");
+
 const { SuiClient, getFullnodeUrl } = require("@mysten/sui/client");
 const { SuiGraphQLClient } = require("@mysten/sui/graphql");
 const { graphql } = require("@mysten/sui/graphql/schemas/2024.4");
@@ -6,6 +8,9 @@ const {
   Ed25519Keypair,
   DEFAULT_ED25519_DERIVATION_PATH,
 } = require("@mysten/sui/keypairs/ed25519");
+
+// Import utils
+const Utils = require("../utils");
 
 const NETWORK = "testnet";
 const SUI_NETWORK_ENDPOINT = getFullnodeUrl(NETWORK);
@@ -26,7 +31,9 @@ const suiPublicKey = keypair.getPublicKey();
 const suiAddress = suiPublicKey.toSuiAddress();
 
 async function query(address, queryFunc, filter) {
-  try {
+  let responseData;
+
+  return Utils.Error.handleInterchangeError(this, res, async function (o) {
     const response = await axios.post(
       SUI_NETWORK_ENDPOINT,
       {
@@ -56,31 +63,44 @@ async function query(address, queryFunc, filter) {
       }
     );
 
-    const result = response.data.result;
-    const data = result.data;
+    responseData = response.data;
 
-    return data.map((_d) => _d.data);
-  } catch (error) {
-    console.error("Error fetching user transactions:", error);
-  }
+    if (responseData.error) {
+      o.message = "Query failfully: " + responseData.error.message;
+      throw new Error(`Query Error: ${responseData.error.message}`);
+    }
+
+    o.data = responseData.result.data;
+    o.message = "Query successfully";
+
+    return o;
+  });
 }
 
 async function sign(address, target, args, typeArgs = []) {
-  const txn = new Transaction();
+  return Utils.Error.handleInterchangeError(this, res, async function (o) {
+    const txn = new Transaction();
 
-  txn.moveCall({
-    target,
-    arguments: args,
-    typeArguments: typeArgs,
+    txn.moveCall({
+      target,
+      arguments: args,
+      typeArguments: typeArgs,
+    });
+
+    const response = await suiClient.signAndExecuteTransaction({
+      signer: address,
+      transaction: txn,
+    });
+
+    o.data = response;
+
+    return o;
   });
-
-  const response = await suiClient.signAndExecuteTransaction({
-    signer: address,
-    transaction: txn,
-  });
-
-  return response;
 }
+
+const functions = {
+  getOwnedObjects: "suix_getOwnedObjects",
+};
 
 module.exports = {
   suiClient,
@@ -91,6 +111,7 @@ module.exports = {
   suiPrivateKey,
   suiPublicKey,
   suiAddress,
+  functions,
   sign,
   query,
 };

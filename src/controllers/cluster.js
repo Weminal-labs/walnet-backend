@@ -19,7 +19,7 @@ const { Handler, Controller } = require("../classes/controller");
 const verifyAddress = require("../middlewares/verifyAddress");
 
 // Import services
-const { PyProcessService } = require("../services/python");
+const { deployCluster } = require("../services/node");
 
 const clusterController = new Controller("/cluster");
 const clustersController = new Controller("/clusters");
@@ -29,7 +29,7 @@ const pyprocess = new PyProcessService();
 clusterController.appendHandler(
   new Handler("/deploy", "post", [verifyAddress], function (req, res) {
     return this.utils.Error.handleResponseError(this, res, async function (o) {
-      const vpc_id = process.env.VPC_ID;
+      const vpcId = process.env.VPC_ID;
       const userAddress = req.headers["user-address"];
       const subnetId = process.env.PRIVATE_SUBNET_1;
       const allowedCidrs = [
@@ -41,16 +41,15 @@ clusterController.appendHandler(
 
       if (!subnetId) {
         o.code = 500;
-        console.error("Subnet Id not found");
         throw new Error("There is some errors in server.");
       }
 
-      const data = await pyprocess.exec(
+      const data = await deployCluster(
         "create_header_node",
-        vpc_id,
+        vpcId,
         userAddress,
         subnetId,
-        JSON.stringify(allowedCidrs)
+        allowedCidrs
       );
 
       o.data = data;
