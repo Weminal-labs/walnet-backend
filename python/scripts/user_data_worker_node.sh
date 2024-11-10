@@ -15,7 +15,7 @@ apt update -y
 apt install -y python3 python3-pip python3-venv curl
 
 # Create a directory for the virtual environment
-mkdir -p $WORK_DIR/ray_env  
+mkdir -p $WORK_DIR/ray_env
 
 # Create and activate the virtual environment
 python3 -m venv $WORK_DIR/ray_env
