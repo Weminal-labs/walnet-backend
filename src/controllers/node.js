@@ -61,7 +61,7 @@ nodesController.appendHandler(
 
       if (response.error) {
         o.code = 500;
-        o.message = response.message;
+        throw new Error(response.message);
       }
 
       o.data = response.data;
@@ -85,7 +85,7 @@ nodesController.appendHandler(
 
       if (response.error) {
         o.code = 500;
-        o.message = response.message;
+        throw new Error(response.message);
       }
 
       o.data = response.data;
@@ -138,7 +138,6 @@ nodeController.appendHandler(
       }
 
       const response = await registerWorkerNode(
-        "create_worker_node",
         vpcId,
         userAddress,
         subnetId,

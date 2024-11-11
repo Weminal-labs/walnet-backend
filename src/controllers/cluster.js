@@ -43,7 +43,6 @@ clusterController.appendHandler(
       }
 
       const response = await deployCluster(
-        "create_header_node",
         vpcId,
         userAddress,
         subnetId,

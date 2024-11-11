@@ -43,7 +43,17 @@ async function registerWorkerNode(vpcId, userAddress, subnetId, allowedCidrs) {
   return response;
 }
 
-async function deployCluster() {}
+async function deployCluster(vpcId, userAddress, subnetId, allowedCidrs) {
+  const response = await pyprocess.exec(
+    "create_header_node",
+    vpcId,
+    userAddress,
+    subnetId,
+    JSON.stringify(allowedCidrs)
+  );
+
+  return response;
+}
 
 async function stopNode(instanceId) {
   const response = await pyprocess.exec(

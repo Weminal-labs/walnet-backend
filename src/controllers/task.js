@@ -8,12 +8,7 @@ const { Handler, Controller } = require("../classes/controller");
 // Import middlewares
 const verifyAddress = require("../middlewares/verifyAddress");
 
-// Import services
-const { PyProcessService } = require("../services/python");
-
 const taskController = new Controller("/task");
-
-const pyprocess = new PyProcessService();
 
 taskController.appendHandler(
   new Handler("/execute-python", "post", [verifyAddress], function (req, res) {
