@@ -264,17 +264,17 @@ nodeController.appendHandler(
       /**
        * The structure of body
        * {
-       *   instanceId: string;
-       *   typeNode: "header" | "worker"
+       *   ip: string;
+       *   nodeType: "header" | "worker"
        * }
        */
-      const { ip, type } = req.body;
+      const { ip, nodeType } = req.body;
 
       if (!ip) throw new Error("The IP of Node is required");
 
-      if (!type) throw new Error("The type of Node is required");
+      if (!nodeType) throw new Error("The type of Node is required");
 
-      const port = type === "header" ? 9000 : 9020;
+      const port = nodeType === "header" ? 9000 : 9020;
 
       const response = await axios.get(`http://${ip}:${port}/check-health`);
 
