@@ -43,7 +43,6 @@ def main(args):
 
             data = create_header_node(
                 vpc_id=vpc_id,
-                user_address=user_address,
                 subnet_id=subnet_id,
                 allowed_cidrs=allowed_cidrs
             )
@@ -64,7 +63,6 @@ def main(args):
 
             data = create_worker_node(
                 vpc_id=vpc_id,
-                user_address=user_address,
                 subnet_id=subnet_id,
                 allowed_cidrs=allowed_cidrs
             )

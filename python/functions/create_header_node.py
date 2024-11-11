@@ -14,7 +14,7 @@ def get_user_data():
         user_data = file.read()
     return user_data
 
-def create_header_node(vpc_id = '', user_address = '', subnet_id = '', allowed_cidrs = None):
+def create_header_node(vpc_id = '', subnet_id = '', allowed_cidrs = None):
     security_group_id = ''
 
     try:
@@ -25,7 +25,7 @@ def create_header_node(vpc_id = '', user_address = '', subnet_id = '', allowed_c
         if allowed_cidrs == None or len(allowed_cidrs) < 1:
             allowed_cidrs = [ '0.0.0.0/0' ]
 
-        security_group_name = generate_security_group_name(user_address)
+        security_group_name = generate_security_group_name()
 
         security_group_id = create_security_group(vpc_id, security_group_name, "Allow Backend and Worker access", [
             {

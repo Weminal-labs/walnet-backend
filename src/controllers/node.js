@@ -25,8 +25,6 @@
 //     "name": string
 //   }
 // }
-const axios = require("axios");
-
 const { Handler, Controller } = require("../classes/controller");
 
 // Import middlewares
@@ -42,6 +40,7 @@ const {
   checkNodeState,
   destroyNode,
   describeNodes,
+  isApplicationReady,
 } = require("../services/node");
 
 const nodeController = new Controller("/node");
@@ -89,30 +88,6 @@ nodesController.appendHandler(
       }
 
       o.data = response.data;
-
-      return o;
-    });
-  })
-);
-
-nodesController.appendHandler(
-  new Handler("/query", "post", [verifyAddress], function (req, res) {
-    return this.utils.Error.handleResponseError(this, res, async function (o) {
-      /**
-       * The structure of body
-       * {
-       *   instanceIds: Array<string>;
-       * }
-       */
-      const { address } = req.body;
-      const response = await queryNodeMetadata({ address });
-
-      if (!response.code) {
-        o.code = 500;
-        throw new Error(response.message);
-      }
-
-      o.data = response;
 
       return o;
     });
@@ -256,6 +231,30 @@ nodeController.appendHandler(
 );
 
 nodeController.appendHandler(
+  new Handler("/query", "post", [verifyAddress], function (req, res) {
+    return this.utils.Error.handleResponseError(this, res, async function (o) {
+      /**
+       * The structure of body
+       * {
+       *   instanceIds: Array<string>;
+       * }
+       */
+      const { address } = req.body;
+      const response = await queryNodeMetadata({ address });
+
+      if (!response.code) {
+        o.code = 500;
+        throw new Error(response.message);
+      }
+
+      o.data = response;
+
+      return o;
+    });
+  })
+);
+
+nodeController.appendHandler(
   new Handler("/check-application", "post", [verifyAddress], function (
     req,
     res
@@ -270,13 +269,7 @@ nodeController.appendHandler(
        */
       const { ip, nodeType } = req.body;
 
-      if (!ip) throw new Error("The IP of Node is required");
-
-      if (!nodeType) throw new Error("The type of Node is required");
-
-      const port = nodeType === "header" ? 9000 : 9020;
-
-      const response = await axios.get(`http://${ip}:${port}/check-health`);
+      const response = await isApplicationReady(ip, nodeType);
 
       if (response.status !== 200) {
         o.code = 500;

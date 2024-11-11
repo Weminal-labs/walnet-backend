@@ -1,4 +1,6 @@
-const { query, functions } = require("../../sui");
+const axios = require("axios");
+
+const { query, inspectTxnBlk, functions } = require("../../sui");
 const { Sui_NetworkModule } = require("../../abis/network");
 
 // Import services
@@ -18,14 +20,22 @@ async function queryNodeMetadata(data) {
     const result = await query(address, functions.getOwnedObjects, {
       MatchAll: [
         {
-          StructType: Sui_NetworkModule.structs.node,
+          StructType: Sui_NetworkModule.structs.nodeCapability,
         },
       ],
     });
+    const id = result[0].content.fields.node_id;
+    const txnBlk = await inspectTxnBlk(
+      address,
+      Sui_NetworkModule.functions.queryNodeInfo,
+      function (txn) {
+        return [txn.object(Sui_NetworkModule.id), txn.pure.u64(id)];
+      }
+    );
 
-    if (!result.code) throw new Error(result.message);
+    if (!txnBlk.code) throw new Error(txnBlk.message);
 
-    o.data = result.data;
+    o.data = txnBlk.data;
 
     return o;
   });
@@ -103,6 +113,16 @@ async function describeNodes(instanceIds) {
   return response;
 }
 
+async function isApplicationReady(ip, nodeType) {
+  if (!ip) throw new Error("The IP of Node is required");
+
+  if (!nodeType) throw new Error("The type of Node is required");
+
+  const port = nodeType === "header" ? 9000 : 9020;
+
+  return axios.get(`http://${ip}:${port}/check-health`);
+}
+
 module.exports = {
   queryNodeMetadata,
   registerWorkerNode,
@@ -113,4 +133,5 @@ module.exports = {
   checkNodeState,
   destroyNode,
   describeNodes,
+  isApplicationReady,
 };

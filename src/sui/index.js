@@ -12,7 +12,7 @@ const {
 // Import utils
 const Utils = require("../utils");
 
-const NETWORK = "testnet";
+const NETWORK = process.env.NETWORK_TYPE;
 const SUI_NETWORK_ENDPOINT = getFullnodeUrl(NETWORK);
 const SUI_VIEW_TXN_ENPOINT = `https://suiscan.xyz/${NETWORK}/tx`;
 const SUI_VIEW_OBJECT_ENPOINT = `https://suiscan.xyz/${NETWORK}/object`;
@@ -73,19 +73,17 @@ async function query(address, queryFunc, filter) {
     o.data = responseData.result.data;
     o.message = "Query successfully";
 
-    console.log("Response data:", responseData);
-
     return o;
   });
 }
 
-async function sign(address, target, args, typeArgs = []) {
+async function sign(address, target, getArgs, typeArgs = []) {
   return Utils.Error.handleInterchangeError(this, async function (o) {
     const txn = new Transaction();
 
     txn.moveCall({
       target,
-      arguments: args,
+      arguments: getArgs(txn),
       typeArguments: typeArgs,
     });
 
@@ -93,6 +91,29 @@ async function sign(address, target, args, typeArgs = []) {
       signer: address,
       transaction: txn,
     });
+
+    o.data = response;
+
+    return o;
+  });
+}
+
+async function inspectTxnBlk(address, target, getArgs, typeArgs = []) {
+  return Utils.Error.handleInterchangeError(this, async function (o) {
+    const txn = new Transaction();
+
+    txn.moveCall({
+      target,
+      arguments: getArgs(txn),
+      typeArguments: typeArgs,
+    });
+
+    const response = await suiClient.devInspectTransactionBlock({
+      signer: address,
+      transaction: txn,
+    });
+
+    if (response.error) throw new Error(response.error);
 
     o.data = response;
 
@@ -116,4 +137,5 @@ module.exports = {
   functions,
   sign,
   query,
+  inspectTxnBlk,
 };
