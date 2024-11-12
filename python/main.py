@@ -6,7 +6,7 @@ from functions.create_header_node import create_header_node
 from functions.create_worker_node import create_worker_node
 from functions.destroy_node import destroy_node
 from functions.stop_node import stop_node
-from functions.describe_nodes import describe_nodes
+from functions.describe_nodes import describe_nodes, describe_nodes_with_type
 from functions.restart_node import restart_node
 from functions.check_nodes_state import check_nodes_state
 
@@ -94,6 +94,10 @@ def main(args):
                 raise Exception("Id of Instance is invalid")
             
             data = restart_node(instance_id)
+        elif fn_name == "describe_nodes_with_type":
+            node_type = args[2]
+            
+            data = describe_nodes_with_type(node_type)
         elif fn_name == "check_nodes_state":
             instance_ids = json.loads(args[2])
 

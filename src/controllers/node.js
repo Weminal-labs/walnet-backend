@@ -40,6 +40,7 @@ const {
   checkNodeState,
   destroyNode,
   describeNodes,
+  describeNodeswithType,
   isApplicationReady,
 } = require("../services/node");
 
@@ -53,10 +54,14 @@ nodesController.appendHandler(
        * The structure of body
        * {
        *   instanceIds: Array<string>;
+       *   nodeType: "header" | "worker" | undefined
        * }
        */
-      const { instanceIds } = req.body;
-      const response = await describeNodes(instanceIds);
+      const { instanceIds, nodeType } = req.body;
+      let response;
+
+      if (instanceIds) response = await describeNodes(instanceIds);
+      else response = await describeNodeswithType(nodeType);
 
       if (response.error) {
         o.code = 500;

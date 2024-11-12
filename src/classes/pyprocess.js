@@ -1,17 +1,11 @@
-const path = require("path");
 const { spawn } = require("child_process");
 
-const Utils = require("../../utils");
-const { stringify } = require("querystring");
+const Utils = require("../utils");
 
 // Define global
 const root = Utils.String.getRootDir();
 
-/**
- * @typedef {keyof PyProcessService.ScriptPaths} ScriptPathKeys
- */
-
-class PyProcessService {
+class PyProcess {
   constructor() {
     this.pythonPath = process.env.PYTHON_PATH || "python3";
   }
@@ -54,4 +48,4 @@ class PyProcessService {
   }
 }
 
-module.exports = { PyProcessService };
+module.exports = PyProcess;

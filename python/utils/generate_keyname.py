@@ -15,6 +15,6 @@ def generate_security_group_name():
     current_timestamp = int(datetime.now().timestamp())
 
     # Merge string
-    key_name = f"sg-{uuid.uuid4().hex}-{current_timestamp}"
+    key_name = f"security-group-{uuid.uuid4().hex}-{current_timestamp}"
         
     return key_name

@@ -53,6 +53,14 @@ def create_worker_node(vpc_id = '', subnet_id = '', allowed_cidrs = None):
                         {
                             'Key': 'Name',
                             'Value': 'worker-node-ray'
+                        },
+                        {
+                            'Key': 'NodeType',
+                            'Value': 'worker'
+                        },
+                        {
+                            'Key': 'Owner',
+                            'Value': 'shared-network'
                         }
                     ]
                 }

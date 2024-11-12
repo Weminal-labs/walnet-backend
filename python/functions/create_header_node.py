@@ -59,6 +59,14 @@ def create_header_node(vpc_id = '', subnet_id = '', allowed_cidrs = None):
                         {
                             'Key': 'Name',
                             'Value': 'header-node-ray'
+                        },
+                        {
+                            'Key': 'NodeType',
+                            'Value': 'header'
+                        },
+                        {
+                            'Key': 'Owner',
+                            'Value': 'shared-network'
                         }
                     ]
                 }

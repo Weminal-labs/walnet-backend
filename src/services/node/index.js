@@ -4,12 +4,12 @@ const { query, inspectTxnBlk, functions } = require("../../sui");
 const { Sui_NetworkModule } = require("../../abis/network");
 
 // Import services
-const { PyProcessService } = require("../../services/python");
+const PyProcess = require("../../classes/pyprocess");
 
 // Import utils
 const Utils = require("../../utils");
 
-const pyprocess = new PyProcessService();
+const pyprocess = new PyProcess();
 
 async function queryNodeMetadata(data) {
   return Utils.Error.handleInterchangeError(this, async function (o) {
@@ -113,6 +113,15 @@ async function describeNodes(instanceIds) {
   return response;
 }
 
+async function describeNodeswithType(nodeType) {
+  const response = await pyprocess.exec(
+    "describe_nodes_with_type",
+    nodeType ? nodeType : ""
+  );
+
+  return response;
+}
+
 async function isApplicationReady(ip, nodeType) {
   if (!ip) throw new Error("The IP of Node is required");
 
@@ -133,5 +142,6 @@ module.exports = {
   checkNodeState,
   destroyNode,
   describeNodes,
+  describeNodeswithType,
   isApplicationReady,
 };
