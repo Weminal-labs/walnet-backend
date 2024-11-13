@@ -29,15 +29,15 @@ class ConvertUtils {
   }
 
   convert(bytes, type) {
-    switch (type) {
+    switch (ConvertUtils.SupportedTypes[type]) {
       case ConvertUtils.SupportedTypes["0x1::string::String"]:
-        return bytesToString(bytes);
+        return this.bytesToString(bytes);
       case ConvertUtils.SupportedTypes["address"]:
-        return bytesToHexAddress(bytes);
+        return this.bytesToHexAddress(bytes);
       case ConvertUtils.SupportedTypes["u8"]:
         return bytes[0];
       case ConvertUtils.SupportedTypes["u64"]:
-        return Number(bytesToU64(bytes)); // Convert BigInt to Number if needed
+        return Number(this.bytesToU64(bytes)); // Convert BigInt to Number if needed
       default:
         throw new Error(`Unknown type: ${type}`);
     }

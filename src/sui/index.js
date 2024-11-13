@@ -30,7 +30,7 @@ const suiPrivateKey = keypair.getSecretKey();
 const suiPublicKey = keypair.getPublicKey();
 const suiAddress = suiPublicKey.toSuiAddress();
 
-async function query(address, queryFunc, filter) {
+async function call(address, queryFunc, filter) {
   let responseData;
 
   return Utils.Error.handleInterchangeError(this, async function (o) {
@@ -77,7 +77,7 @@ async function query(address, queryFunc, filter) {
   });
 }
 
-async function sign(address, target, getArgs, typeArgs = []) {
+async function sign(address, target, getArgs, typeArgs) {
   return Utils.Error.handleInterchangeError(this, async function (o) {
     const txn = new Transaction();
 
@@ -98,7 +98,7 @@ async function sign(address, target, getArgs, typeArgs = []) {
   });
 }
 
-async function inspectTxnBlk(address, target, getArgs, typeArgs = []) {
+async function inspectTxnBlk(address, target, getArgs, typeArgs) {
   return Utils.Error.handleInterchangeError(this, async function (o) {
     const txn = new Transaction();
 
@@ -109,8 +109,8 @@ async function inspectTxnBlk(address, target, getArgs, typeArgs = []) {
     });
 
     const response = await suiClient.devInspectTransactionBlock({
-      signer: address,
-      transaction: txn,
+      sender: address,
+      transactionBlock: txn,
     });
 
     if (response.error) throw new Error(response.error);
@@ -136,6 +136,6 @@ module.exports = {
   suiAddress,
   functions,
   sign,
-  query,
+  call,
   inspectTxnBlk,
 };

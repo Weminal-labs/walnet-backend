@@ -1,9 +1,9 @@
-const axios = require("axios");
+// const axios = require("axios");
 
-const { suiClient, functions, inspectTxnBlk } = require("../sui");
+// const { suiClient, functions, inspectTxnBlk } = require("../sui");
 
 // Import abis
-const { Sui_NetworkModule } = require("../abis/network");
+// const { Sui_NetworkModule } = require("../abis/network");
 
 // Import services
 const { queryNodeMetadata } = require("../services/node");
@@ -32,23 +32,17 @@ function verifyDeployment(req, res, next) {
 
     //
     const response = await queryNodeMetadata({ address });
-    const nodeId = response.data[0].content.fields.node_id;
-    const inspectResult = await inspectTxnBlk(
-      address,
-      Sui_NetworkModule.functions.queryNodeInfo,
-      function (txn) {
-        return [txn.object(Sui_NetworkModule.networkId), txn.pure.u64(nodeId)];
-      }
-    );
-    const resultValues = inspectResult.results[0].returnValues;
+    const result = response.data.results;
 
-    const readableResults = Utils.Convert.convertMultiply(resultValues);
+    const values = Utils.Convert.convertMultiply(result[0].returnValues);
 
-    if (readableResults[1] === address) {
+    console.log("Values:", values);
+
+    if (values[1] === address) {
       return next();
     } else {
       o.code = 401;
-      throw new Error("Unauthenticated");
+      throw new Error("You haven't deploy any node yet");
     }
   });
 }

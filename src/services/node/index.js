@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const { query, inspectTxnBlk, functions } = require("../../sui");
+const { call, inspectTxnBlk, functions } = require("../../sui");
 const { Sui_NetworkModule } = require("../../abis/network");
 
 // Import services
@@ -17,19 +17,19 @@ async function queryNodeMetadata(data) {
 
     if (!address) throw new Error("Sui Addresss is required");
 
-    const result = await query(address, functions.getOwnedObjects, {
+    const result = await call(address, functions.getOwnedObjects, {
       MatchAll: [
         {
           StructType: Sui_NetworkModule.structs.nodeCapability,
         },
       ],
     });
-    const id = result[0].content.fields.node_id;
+    const nodeId = result.data[0].data.content.fields.node_id;
     const txnBlk = await inspectTxnBlk(
       address,
       Sui_NetworkModule.functions.queryNodeInfo,
       function (txn) {
-        return [txn.object(Sui_NetworkModule.id), txn.pure.u64(id)];
+        return [txn.object(Sui_NetworkModule.networkId), txn.pure.u64(nodeId)];
       }
     );
 

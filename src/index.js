@@ -49,7 +49,7 @@ app.get("/verify-address", verifyAddress, function (req, res) {
 
 app.get("/verify-deployment", verifyDeployment, function (req, res) {
   return Utils.Error.handleResponseError(app, res, function (o) {
-    o.data = "Address is valid";
+    o.data = "This address has a deployment";
     return o;
   });
 });
