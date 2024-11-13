@@ -67,15 +67,11 @@ function verifyAddress(req, res, next) {
     //   }
     // );
 
-    // const data = response.data;
-
-    // console.log(data);
-
-    if (response) {
+    if (parseInt(response.totalBalance) / 10e9 > 0) {
       return next();
     } else {
       o.code = 401;
-      throw new Error("Unauthenticated");
+      throw new Error("Invalid Address");
     }
   });
 }
