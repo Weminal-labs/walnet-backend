@@ -66,12 +66,17 @@ async function call(address, queryFunc, filter) {
     responseData = response.data;
 
     if (responseData.error) {
-      o.message = "Query failfully: " + responseData.error.message;
-      throw new Error(`Query Error: ${responseData.error.message}`);
+      o.message = "Call failfully: " + responseData.error.message;
+      throw new Error(`Call Error}`);
+    }
+
+    if (responseData.result.data.length === 0) {
+      o.message = "Call failfully: " + "Not found";
+      throw new Error(`Call Error`);
     }
 
     o.data = responseData.result.data;
-    o.message = "Query successfully";
+    o.message = "Call successfully";
 
     return o;
   });

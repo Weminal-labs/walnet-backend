@@ -17,14 +17,20 @@ async function queryNodeMetadata(data) {
 
     if (!address) throw new Error("Sui Addresss is required");
 
-    const result = await call(address, functions.getOwnedObjects, {
+    const response = await call(address, functions.getOwnedObjects, {
       MatchAll: [
         {
           StructType: Sui_NetworkModule.structs.nodeCapability,
         },
       ],
     });
-    const nodeId = result.data[0].data.content.fields.node_id;
+
+    if (!response.code) {
+      o.code = 500;
+      throw new Error(response.message);
+    }
+
+    const nodeId = response.data[0].data.content.fields.node_id;
     const txnBlk = await inspectTxnBlk(
       address,
       Sui_NetworkModule.functions.queryNodeInfo,

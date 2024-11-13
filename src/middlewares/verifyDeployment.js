@@ -32,17 +32,21 @@ function verifyDeployment(req, res, next) {
 
     //
     const response = await queryNodeMetadata({ address });
+
+    if (!response.code) {
+      o.code = 401;
+      throw new Error("You haven't deployed any node yet");
+    }
+
     const result = response.data.results;
 
     const values = Utils.Convert.convertMultiply(result[0].returnValues);
-
-    console.log("Values:", values);
 
     if (values[1] === address) {
       return next();
     } else {
       o.code = 401;
-      throw new Error("You haven't deploy any node yet");
+      throw new Error("You haven't deployed any node yet");
     }
   });
 }
