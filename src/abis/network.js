@@ -16,9 +16,27 @@ const Sui_NetworkModule = {
     cluster: `${packageId}::${modules.network}::Cluster`,
     task: `${packageId}::${modules.network}::Task`,
     nodeCapability: `${packageId}::${modules.network}::NodeCapability`,
+    clusterCapability: `${packageId}::${modules.network}::ClusterCapability`,
   },
   functions: {
+    // Arguments
+    // arg0: ref Network (pass Network Id)
+    // arg1: Node Id
     queryNodeInfo: `${packageId}::${modules.network}::query_node_info`,
+    // Arguments
+    // arg0: ref Network (pass Network Id)
+    // arg1: Cluster Id
+    queryClusterInfo: `${packageId}::${modules.network}::query_cluster_info`,
+    // Arguments
+    // arg0: ref Network (pass Network Id)
+    // arg1: Cluster Id
+    // arg2: ref NodeCapability (pass NodeCapability Id)
+    joinCluster: `${packageId}::${modules.network}::join_cluster`,
+    // Arguments
+    // arg0: ref NodeRegistry (pass Node Registry Id)
+    // arg1: ref Network (pass Network Id)
+    // arg2: ref NodeCapability (pass NodeCapability Id)
+    deregisterNode: `${packageId}::${modules.network}::deregister_node`,
   },
 };
 

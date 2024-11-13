@@ -11,6 +11,57 @@ const Utils = require("../../utils");
 
 const pyprocess = new PyProcess();
 
+async function queryClustersMetadata(data) {
+  return Utils.Error.handleInterchangeError(this, async function (o) {
+    const { address } = data;
+
+    if (!address) throw new Error("Sui Addresss is required");
+
+    const response = await call(address, functions.getOwnedObjects, {
+      MatchAll: [
+        {
+          StructType: Sui_NetworkModule.structs.clusterCapability,
+        },
+      ],
+    });
+
+    if (!response.code) throw new Error(response.message);
+
+    // Array of Id
+    const clusters_id = response.data[0].data.content.fields.clusters_id;
+
+    if (!clusters_id || clusters_id.length === 0)
+      throw new Error("You don't have any cluster deployed");
+
+    // !!! Important Note
+    // In the future, backend will consider which
+    // cluster is suitable for handle task, and will
+    // take id of that cluster to get ip of node to handle task.
+    const randomClusterId =
+      clusters_id[Utils.Number(0, clusters_id.length - 1)];
+    if (!randomClusterId) {
+      throw new Error("Don't find any cluster id");
+    }
+    o.data = randomClusterId;
+    // const txnBlk = await inspectTxnBlk(
+    //   address,
+    //   Sui_NetworkModule.functions.queryClusterInfo,
+    //   function (txn) {
+    //     return [
+    //       txn.object(Sui_NetworkModule.networkId),
+    //       txn.pure.u64(randomClusterId),
+    //     ];
+    //   }
+    // );
+
+    // if (!txnBlk.code) throw new Error(txnBlk.message);
+
+    // o.data = txnBlk.data;
+
+    return o;
+  });
+}
+
 async function queryNodeMetadata(data) {
   return Utils.Error.handleInterchangeError(this, async function (o) {
     const { address } = data;
@@ -25,10 +76,7 @@ async function queryNodeMetadata(data) {
       ],
     });
 
-    if (!response.code) {
-      o.code = 500;
-      throw new Error(response.message);
-    }
+    if (!response.code) throw new Error(response.message);
 
     const nodeId = response.data[0].data.content.fields.node_id;
     const txnBlk = await inspectTxnBlk(
@@ -141,6 +189,7 @@ async function isApplicationReady(ip, nodeType) {
 module.exports = {
   queryNodeMetadata,
   registerWorkerNode,
+  queryClustersMetadata,
   deployCluster,
   stopNode,
   restartNode,

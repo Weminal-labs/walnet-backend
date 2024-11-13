@@ -6,7 +6,10 @@
 // const { Sui_NetworkModule } = require("../abis/network");
 
 // Import services
-const { queryNodeMetadata } = require("../services/node");
+const {
+  queryNodeMetadata,
+  queryClustersMetadata,
+} = require("../services/node");
 
 // Import utils
 const Utils = require("../utils");
@@ -31,18 +34,19 @@ function verifyDeployment(req, res, next) {
     // };
 
     //
-    const response = await queryNodeMetadata({ address });
+    const response = await queryClustersMetadata({ address });
 
     if (!response.code) {
       o.code = 401;
-      throw new Error("You haven't deployed any node yet");
+      throw new Error(response.message);
     }
 
-    const result = response.data.results;
+    // const result = response.data.results;
 
-    const values = Utils.Convert.convertMultiply(result[0].returnValues);
+    // const values = Utils.Convert.convertMultiply(result[0].returnValues);
 
-    if (values[1] === address) {
+    // values[1] === address
+    if (response.data) {
       return next();
     } else {
       o.code = 401;
