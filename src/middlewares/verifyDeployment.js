@@ -1,6 +1,9 @@
 const axios = require("axios");
 
-const { suiClient } = require("../sui");
+const { suiClient, functions, inspectTxnBlk } = require("../sui");
+
+// Import abis
+const { Sui_NetworkModule } = require("../abis/network");
 
 // Import services
 const { queryNodeMetadata } = require("../services/node");
@@ -29,8 +32,19 @@ function verifyDeployment(req, res, next) {
 
     //
     const response = await queryNodeMetadata({ address });
+    const nodeId = response.data[0].content.fields.node_id;
+    const inspectResult = await inspectTxnBlk(
+      address,
+      Sui_NetworkModule.functions.queryNodeInfo,
+      function (txn) {
+        return [txn.object(Sui_NetworkModule.networkId), txn.pure.u64(nodeId)];
+      }
+    );
+    const resultValues = inspectResult.results[0].returnValues;
 
-    if (response) {
+    const readableResults = Utils.Convert.convertMultiply(resultValues);
+
+    if (readableResults[1] === address) {
       return next();
     } else {
       o.code = 401;

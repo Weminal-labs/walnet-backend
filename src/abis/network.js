@@ -1,4 +1,6 @@
 const packageId = process.env.NETWORK_PACKAGE_ID;
+const networkId = process.env.NETWORK_ID;
+const nodeRegistryId = process.env.NODE_REGISTRY_ID;
 
 const modules = {
   network: process.env.NETWORK_PACKAGE_NAME,
@@ -7,6 +9,8 @@ const modules = {
 const Sui_NetworkModule = {
   id: packageId,
   name: modules.network,
+  networkId,
+  nodeRegistryId,
   structs: {
     node: `${packageId}::${modules.network}::Node`,
     cluster: `${packageId}::${modules.network}::Cluster`,

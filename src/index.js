@@ -15,6 +15,7 @@ const { taskController } = require("../src/controllers/task");
 
 // Import middlewares
 const verifyAddress = require("./middlewares/verifyAddress");
+const verifyDeployment = require("./middlewares/verifyDeployment");
 
 const app = express();
 const server = http.createServer(app);
@@ -39,7 +40,19 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/verify-address", verifyAddress);
+app.get("/verify-address", verifyAddress, function (req, res) {
+  return Utils.Error.handleResponseError(app, res, function (o) {
+    o.data = "Address is valid";
+    return o;
+  });
+});
+
+app.get("/verify-deployment", verifyDeployment, function (req, res) {
+  return Utils.Error.handleResponseError(app, res, function (o) {
+    o.data = "Address is valid";
+    return o;
+  });
+});
 
 app.get("/check-health", (req, res) => {
   return Utils.Error.handleResponseError(app, res, async function (o) {
