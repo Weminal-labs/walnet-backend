@@ -3,8 +3,9 @@ from datetime import datetime, timedelta
 
 # Import utils
 from utils.cloudwatch_client import get_cloudwatch_client
+from functions.describe_nodes import describe_nodes_with_type
 
-def check_cpu_utilization(instance_id):
+def check_idle(instance_id):
     cloudwatch = get_cloudwatch_client()
 
     # Get the CPU utilization for the last 5 minutes
@@ -12,8 +13,9 @@ def check_cpu_utilization(instance_id):
         Namespace='AWS/EC2',
         MetricName='CPUUtilization',
         Dimensions=[{ 'Name': 'InstanceId', 'Value': instance_id }],
-        StartTime=datetime.now() - timedelta(minutes=5),
+        StartTime=datetime.now() - timedelta(minutes=15),
         EndTime=datetime.now(),
+        Period=900,
         Statistics=['Average']
     )
 
@@ -21,8 +23,21 @@ def check_cpu_utilization(instance_id):
     data_points = response['Datapoints']
     if data_points:
         avg_cpu = sum(dp['Average'] for dp in data_points) / len(data_points)
-        print(f"Average CPU Utilization: {avg_cpu}%")
-        return avg_cpu > 10  # Busy if above 10%, idle otherwise
+        return avg_cpu <= 5.5  # Busy if above 10%, idle otherwise
     else:
-        print("No data points available.")
         return False
+
+def get_idle_nodes():
+    instances = describe_nodes_with_type()
+    instance_ids = [
+        instance["id"]
+        for instance in instances
+    ]
+
+    idle_instances = []
+
+    for id in instance_ids:
+        if check_idle(id):
+            idle_instances.append(id)
+
+    return idle_instances

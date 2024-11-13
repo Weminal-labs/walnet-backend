@@ -1,5 +1,9 @@
 const CronJob = require("../../classes/cronjob");
-const { describeNodeswithType, queryNodeMetadata } = require("../node");
+const {
+  describeNodeswithType,
+  queryNodeMetadata,
+  getIdleNodes,
+} = require("../node");
 
 // Every 30 seconds, backend will
 // - Get Node state in AWS
@@ -16,12 +20,15 @@ const nodesConsiderationJob = new CronJob("*/30 * * * * *", async function () {
 // Currently, our infrastructure base on cloud, so we
 // need to check the usage of cpu in each node that is created
 // to decide something to do like stop, destroy instance.
-const checkCPUUtilizationJob = new CronJob(
-  "* 15 * * * *",
-  async function () {}
+const checkIdleNodeJob = new CronJob(
+  // "* 15 * * * *",
+  "*/10 * * * * *",
+  async function () {
+    console.log("Idle instances:", await getIdleNodes());
+  }
 );
 
 module.exports = {
   nodesConsiderationJob,
-  checkCPUUtilizationJob,
+  checkIdleNodeJob,
 };

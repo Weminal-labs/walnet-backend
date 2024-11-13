@@ -38,7 +38,7 @@ async function queryClustersMetadata(data) {
     // cluster is suitable for handle task, and will
     // take id of that cluster to get ip of node to handle task.
     const randomClusterId =
-      clusters_id[Utils.Number(0, clusters_id.length - 1)];
+      clusters_id[Utils.Number.getRandom(0, clusters_id.length - 1)];
     if (!randomClusterId) {
       throw new Error("Don't find any cluster id");
     }
@@ -186,6 +186,12 @@ async function isApplicationReady(ip, nodeType) {
   return axios.get(`http://${ip}:${port}/check-health`);
 }
 
+async function getIdleNodes() {
+  const response = await pyprocess.exec("get_idle_nodes");
+
+  return response;
+}
+
 module.exports = {
   queryNodeMetadata,
   registerWorkerNode,
@@ -199,4 +205,5 @@ module.exports = {
   describeNodes,
   describeNodeswithType,
   isApplicationReady,
+  getIdleNodes,
 };

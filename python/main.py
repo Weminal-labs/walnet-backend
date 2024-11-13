@@ -9,6 +9,7 @@ from functions.stop_node import stop_node
 from functions.describe_nodes import describe_nodes, describe_nodes_with_type
 from functions.restart_node import restart_node
 from functions.check_nodes_state import check_nodes_state
+from functions.cpu_utilization import get_idle_nodes
 
 # Import utils
 from utils.response import Response
@@ -105,6 +106,8 @@ def main(args):
                 raise Exception("Id of Instance(s) are required to describe")
             
             data = check_nodes_state(instance_ids)
+        elif fn_name == 'get_idle_nodes':
+            return get_idle_nodes()
         else:
             raise Exception(f"Function {fn_name} is not valid")
 

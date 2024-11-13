@@ -33,20 +33,20 @@ def describe_nodes_with_type(type_of_node = None):
     ec2 = get_ec2_client()
     filter = [
         {
-            'Key': 'tag:Owner',
-            'Value': 'shared-network'
+            'Name': 'tag:Owner',
+            'Values': ['shared-network']
         }
     ]
 
     if type_of_node == 'header':
         filter.append({
-            'Key': 'tag:NodeType',
-            'Value': 'header'
+            'Name': 'tag:NodeType',
+            'Values': ['header']
         })
     elif type_of_node == 'worker':
         filter.append({
-            'Key': 'tag:NodeType',
-            'Value': 'worker'
+            'Name': 'tag:NodeType',
+            'Values': ['worker']
         })
 
     response = ec2.describe_instances(Filters=filter)

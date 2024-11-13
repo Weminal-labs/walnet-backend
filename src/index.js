@@ -17,6 +17,9 @@ const { taskController } = require("../src/controllers/task");
 const verifyAddress = require("./middlewares/verifyAddress");
 const verifyDeployment = require("./middlewares/verifyDeployment");
 
+// Import services
+const { checkIdleNodeJob } = require("./services/cronjob");
+
 const app = express();
 const server = http.createServer(app);
 
@@ -84,3 +87,6 @@ const HOST = process.env.HOST || "0.0.0.0";
 server.listen(PORT, HOST, function () {
   console.log(`Your server is listening on http://localhost:${PORT}`);
 });
+
+// Run cronjob
+checkIdleNodeJob.start();
