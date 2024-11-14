@@ -29,7 +29,7 @@ def describe_nodes(instance_ids):
     response = ec2.describe_instances(InstanceIds=instance_ids)
     return _get_node_information(response)
 
-def describe_nodes_with_type(type_of_node = None):
+def describe_nodes_with_type(type_of_node = None, additional_filter = None):
     ec2 = get_ec2_client()
     filter = [
         {
@@ -48,6 +48,9 @@ def describe_nodes_with_type(type_of_node = None):
             'Name': 'tag:NodeType',
             'Values': ['worker']
         })
+
+    if additional_filter != None:
+        filter = filter + additional_filter
 
     response = ec2.describe_instances(Filters=filter)
     return _get_node_information(response)

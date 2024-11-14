@@ -12,10 +12,15 @@ const {
 // To verify and consider which worker nodes can join to header nodes.
 const nodesConsiderationJob = new CronJob("*/30 * * * * *", async function () {
   // Get Nodes' state on AWS
-  const promises = Promise.all([describeNodeswithType(), queryNodeMetadata()]);
+  const responses = await Promise.all([describeNodeswithType()]);
+  console.log(responses);
+  for (const response of responses) console.log(response.data);
 
   // Get Nodes' metadata on chain
+
   // Consider
+
+  // Call join cluster transaction
 });
 
 // Currently, our infrastructure base on cloud, so we
@@ -23,11 +28,13 @@ const nodesConsiderationJob = new CronJob("*/30 * * * * *", async function () {
 // to decide something to do like stop, destroy instance.
 const checkIdleNodeJob = new CronJob(
   // "* 15 * * * *",
-  "*/10 * * * * *",
+  "* 15 * * * *",
   async function () {
     console.log("Check idle nodes");
-    const idleNodes = await getIdleNodes();
-    const response = await stopNodes(idleNodes);
+    const response = await getIdleNodes();
+    const idleNodes = response.data;
+    if (!idleNodes || idleNodes.length === 0) return;
+    await stopNodes(idleNodes);
     console.log("All idle nodes are destroyed");
   }
 );

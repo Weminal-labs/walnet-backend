@@ -39,9 +39,11 @@ async function queryClustersMetadata(data) {
     // take id of that cluster to get ip of node to handle task.
     const randomClusterId =
       clusters_id[Utils.Number.getRandom(0, clusters_id.length - 1)];
+
     if (!randomClusterId) {
       throw new Error("Don't find any cluster id");
     }
+
     o.data = randomClusterId;
     // const txnBlk = await inspectTxnBlk(
     //   address,

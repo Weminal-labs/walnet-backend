@@ -21,6 +21,12 @@ const Sui_NetworkModule = {
   functions: {
     // Arguments
     // arg0: ref Network (pass Network Id)
+    // arg1: ref NodeCapability (pass NodeCapability Id)
+    // arg2: task Id
+    // arg3: compute time
+    completeTask: `${packageId}::${modules.network}::complete_task`,
+    // Arguments
+    // arg0: ref Network (pass Network Id)
     // arg1: Node Id
     queryNodeInfo: `${packageId}::${modules.network}::query_node_info`,
     // Arguments

@@ -4,10 +4,10 @@ import json
 # Import functions
 from functions.create_header_node import create_header_node
 from functions.create_worker_node import create_worker_node
-from python.functions.destroy_nodes import destroy_nodes
-from python.functions.stop_nodes import stop_nodes
+from functions.destroy_nodes import destroy_nodes
+from functions.stop_nodes import stop_nodes
 from functions.describe_nodes import describe_nodes, describe_nodes_with_type
-from python.functions.restart_nodes import restart_nodes
+from functions.restart_nodes import restart_nodes
 from functions.check_nodes_state import check_nodes_state
 from functions.cpu_utilization import get_idle_nodes
 

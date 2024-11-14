@@ -9,6 +9,9 @@ const { Handler, Controller } = require("../classes/controller");
 const verifyAddress = require("../middlewares/verifyAddress");
 const verifyDeployment = require("../middlewares/verifyDeployment");
 
+// Import services
+const { confirmTaskIsCompleted } = require("../services/task");
+
 const taskController = new Controller("/task");
 
 taskController.appendHandler(
@@ -21,7 +24,8 @@ taskController.appendHandler(
         this,
         res,
         async function (o) {
-          const { headerIp, code } = req.body;
+          const address = req.headers["user-address"];
+          const { taskId, headerIp, code } = req.body;
 
           if (!headerIp) {
             o.code = 400;
@@ -39,6 +43,12 @@ taskController.appendHandler(
               code: code,
             }
           );
+
+          await confirmTaskIsCompleted({
+            address,
+            taskId,
+            processingTime: response.data.processingTime,
+          });
 
           o.data = response.data;
 

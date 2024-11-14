@@ -28,7 +28,10 @@ def check_idle(instance_id):
         return False
 
 def get_idle_nodes():
-    instances = describe_nodes_with_type()
+    instances = describe_nodes_with_type(additional_filter=[{
+        'Name': 'instance-state-name',
+        'Values': ['running']
+    }])
     instance_ids = [
         instance["id"]
         for instance in instances
