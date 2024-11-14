@@ -4,10 +4,10 @@ import json
 # Import functions
 from functions.create_header_node import create_header_node
 from functions.create_worker_node import create_worker_node
-from functions.destroy_node import destroy_node
-from functions.stop_node import stop_node
+from python.functions.destroy_nodes import destroy_nodes
+from python.functions.stop_nodes import stop_nodes
 from functions.describe_nodes import describe_nodes, describe_nodes_with_type
-from functions.restart_node import restart_node
+from python.functions.restart_nodes import restart_nodes
 from functions.check_nodes_state import check_nodes_state
 from functions.cpu_utilization import get_idle_nodes
 
@@ -67,20 +67,34 @@ def main(args):
                 subnet_id=subnet_id,
                 allowed_cidrs=allowed_cidrs
             )
-        elif fn_name == "destroy_node":
+        elif fn_name == "destroy_nodes":
             instance_ids = json.loads(args[2])
 
             if not is_array(instance_ids) or len(instance_ids) < 1:
                 raise Exception("Id of Instance(s) are required to terminate")
 
-            data = destroy_node(instance_ids)
-        elif fn_name == "stop_node":
+            data = destroy_nodes(instance_ids)
+        elif fn_name == "destroy_node":
+            instance_id = args[2]
+
+            if not is_string(instance_id):
+                raise Exception("Id of Instance is invalid")
+
+            data = destroy_nodes([instance_id])
+        elif fn_name == "stop_nodes":
             instance_ids = json.loads(args[2])
 
             if not is_array(instance_ids) or len(instance_ids) < 1:
                 raise Exception("Id of Instance(s) are required to stop")
 
-            data = stop_node(instance_ids)
+            data = stop_nodes(instance_ids)
+        elif fn_name == "stop_node":
+            instance_id = args[2]
+
+            if not is_string(instance_id):
+                raise Exception("Id of Instance is invalid")
+
+            data = stop_nodes([instance_id])
         elif fn_name == "describe_nodes":
             instance_ids = json.loads(args[2])
 
@@ -88,13 +102,20 @@ def main(args):
                 raise Exception("Id of Instance(s) are required to describe")
             
             data = describe_nodes(instance_ids)
+        elif fn_name == "restart_nodes":
+            instance_ids = json.loads(args[2])
+
+            if not is_array(instance_ids) or len(instance_ids) < 1:
+                raise Exception("Id of Instance(s) are required to stop")
+            
+            data = restart_nodes(instance_ids)
         elif fn_name == "restart_node":
             instance_id = args[2]
 
             if not is_string(instance_id):
                 raise Exception("Id of Instance is invalid")
             
-            data = restart_node(instance_id)
+            data = restart_nodes([instance_id])
         elif fn_name == "describe_nodes_with_type":
             node_type = args[2]
             
@@ -107,7 +128,7 @@ def main(args):
             
             data = check_nodes_state(instance_ids)
         elif fn_name == 'get_idle_nodes':
-            return get_idle_nodes()
+            data = get_idle_nodes()
         else:
             raise Exception(f"Function {fn_name} is not valid")
 

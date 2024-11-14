@@ -25,7 +25,7 @@ source $WORK_DIR/ray_env/bin/activate
 pip install --upgrade pip
 
 # Install Ray and Flask
-pip install -U "ray[default]" flask
+pip install -U "ray[default]" flask numpy
 
 # Download the source code for the header server
 curl -o $WORK_DIR/main.py https://raw.githubusercontent.com/Weminal-labs/walnet-backend/refs/heads/main/python/ray/header.py

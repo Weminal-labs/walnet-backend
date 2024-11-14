@@ -25,7 +25,7 @@ source $WORK_DIR/ray_env/bin/activate
 pip install --upgrade pip
 
 # Install Ray
-pip install -U "ray" flask
+pip install -U "ray" flask numpy
 
 # Load source code for Header Server
 curl -o $WORK_DIR/workder.py https://raw.githubusercontent.com/Weminal-labs/walnet-backend/refs/heads/main/python/ray/workder.py

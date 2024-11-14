@@ -19,6 +19,9 @@ class CronJob {
 
     if (!fn && !this._fn) throw new Error("Callback for Cron Job is required");
 
+    expression = this._expression ? this._expression : expression;
+    fn = this._fn ? this._fn : fn;
+
     this._instance = cron.schedule(expression, fn, options);
   }
 

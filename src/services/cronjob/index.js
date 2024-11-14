@@ -3,6 +3,7 @@ const {
   describeNodeswithType,
   queryNodeMetadata,
   getIdleNodes,
+  stopNodes,
 } = require("../node");
 
 // Every 30 seconds, backend will
@@ -24,7 +25,10 @@ const checkIdleNodeJob = new CronJob(
   // "* 15 * * * *",
   "*/10 * * * * *",
   async function () {
-    console.log("Idle instances:", await getIdleNodes());
+    console.log("Check idle nodes");
+    const idleNodes = await getIdleNodes();
+    const response = await stopNodes(idleNodes);
+    console.log("All idle nodes are destroyed");
   }
 );
 

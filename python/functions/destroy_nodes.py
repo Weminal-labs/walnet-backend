@@ -2,7 +2,7 @@ from utils.ec2_client import get_ec2_client, get_ec2_resource
 
 from functions.describe_nodes import describe_nodes
 
-def destroy_node(instance_ids):
+def destroy_nodes(instance_ids):
     try:
         ec2 = get_ec2_client()
         ec2_resource = get_ec2_resource()

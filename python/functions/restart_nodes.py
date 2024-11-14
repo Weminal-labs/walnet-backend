@@ -2,10 +2,10 @@ from utils.ec2_client import get_ec2_client
 
 from functions.describe_nodes import describe_nodes
 
-def restart_node(instance_id):
+def restart_nodes(instance_ids):
     ec2 = get_ec2_client()
 
-    response = ec2.start_instances(InstanceIds=[instance_id])
+    response = ec2.start_instances(InstanceIds=instance_ids)
 
     instance = response['StartingInstances'][0]
 

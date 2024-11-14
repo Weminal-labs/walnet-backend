@@ -122,7 +122,16 @@ async function deployCluster(vpcId, userAddress, subnetId, allowedCidrs) {
 async function stopNode(instanceId) {
   const response = await pyprocess.exec(
     "stop_node",
-    JSON.stringify([instanceId])
+    JSON.stringify(instanceId)
+  );
+
+  return response;
+}
+
+async function stopNodes(instanceIds) {
+  const response = await pyprocess.exec(
+    "stop_nodes",
+    JSON.stringify(instanceIds)
   );
 
   return response;
@@ -130,6 +139,15 @@ async function stopNode(instanceId) {
 
 async function restartNode(instanceId) {
   const response = await pyprocess.exec("restart_node", instanceId);
+
+  return response;
+}
+
+async function restartNodes(instanceIds) {
+  const response = await pyprocess.exec(
+    "restart_nodes",
+    JSON.stringify(instanceIds)
+  );
 
   return response;
 }
@@ -150,9 +168,15 @@ async function checkNodeState(instanceId) {
 }
 
 async function destroyNode(instanceId) {
+  const response = await pyprocess.exec("destroy_node", instanceId);
+
+  return response;
+}
+
+async function destroyNodes(instanceIds) {
   const response = await pyprocess.exec(
-    "destroy_node",
-    JSON.stringify([instanceId])
+    "destroy_nodes",
+    JSON.stringify(instanceIds)
   );
 
   return response;
@@ -198,10 +222,13 @@ module.exports = {
   queryClustersMetadata,
   deployCluster,
   stopNode,
+  stopNodes,
   restartNode,
+  restartNodes,
   checkNodesState,
   checkNodeState,
   destroyNode,
+  destroyNodes,
   describeNodes,
   describeNodeswithType,
   isApplicationReady,

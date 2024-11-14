@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+import time
 import ray
 import subprocess
 import io
@@ -58,7 +59,10 @@ def trigger_task():
 
         print("End task - Example Task")
 
-        return jsonify({"status": "Task completed", "result": result}), 200
+        return jsonify({
+            "status": "Task completed",
+            "result": result
+        }), 200
     except Exception as e:
         print("Error in task - Example Task")
         return jsonify({"error": str(e)}), 500
@@ -74,12 +78,18 @@ def execute_python_task():
 
     # Submit the code execution task to Ray
     try:
+        start_time = time.time()
         task_result = execute_python.remote(code)
+        processing_time = time.time() - start_time
         result = ray.get(task_result)
 
         print("End task - Execute Python Task")
 
-        return jsonify({"status": "Task completed", "result": result}), 200
+        return jsonify({
+            "status": "Task completed",
+            "result": result,
+            "processingTime": processing_time
+        }), 200
     except Exception as e:
         print("Error in task - Execute Python Task")
         return jsonify({"error": str(e)}), 500
